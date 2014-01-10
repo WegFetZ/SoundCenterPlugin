@@ -39,7 +39,9 @@ public class StreamManager {
 	public static void addUserToSession(byte type, Short id, ServerUser user) {
 			
 		//check server load TODO: more precise
-		if(getTotalRate() + 20000 > SoundCenter.config.maxStreamBandwidth()*1024) {
+		
+		int maxBandwidth = SoundCenter.config.maxStreamBandwidth();		
+		if(getTotalRate() + 20000 > maxBandwidth*1024 && maxBandwidth > 0) {
 			SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_STREAM_SERVER_LOAD, null, null, user);
 			return;
 		}
