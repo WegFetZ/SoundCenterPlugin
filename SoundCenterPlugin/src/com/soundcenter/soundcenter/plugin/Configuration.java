@@ -60,7 +60,7 @@ public class Configuration {
         verifyIp = cfg.getBoolean("Verify-By-IP-Address");
         voiceEnabled = cfg.getBoolean("Enable-Voice-Chat");
 		port = cfg.getInt("Port");
-		serverCapacity = cfg.getInt("MAX-Users");
+		serverCapacity = cfg.getInt("Max-Users");
 		defaultBoxRange = cfg.getInt("Default-Box-Range");
 		defaultFadeout = cfg.getInt("Default-Area/Biome-Fadeout");
 		voiceRange = cfg.getInt("Voice-Range");
