@@ -40,7 +40,7 @@ public class Configuration {
 			{
             	put("Debug-Mode", false);
             	put("Port", 4224);
-            	put("MAX-Users", 50);
+            	put("Max-Users", 50);
             	put("Verify-By-IP-Address", true);
             	put("Enable-Voice-Chat", true);
             	put("Default-Box-Range", 25);
