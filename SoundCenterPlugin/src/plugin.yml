@@ -1,0 +1,91 @@
+name: SoundCenter
+main: com.soundcenter.soundcenter.plugin.SoundCenter
+version: 0.100
+commands:
+  sc:
+    aliases: soundcenter
+    description: Prefix for all SoundCenter commands.
+    usage: /sc help
+permissions:
+  sc.*:
+    description: Gives access to all SoundCenter commands
+    children:
+      sc.init: true
+      sc.upload.midi: true
+      sc.upload.mp3: true
+      sc.set.area: true
+      sc.set.box: true
+      sc.set.biome: true
+      sc.set.world: true
+      sc.set.overlap: true
+      sc.play.global: true
+      sc.speak: true
+      sc.speak.global: true
+      sc.others.use.songs: true
+      sc.others.edit: true
+      sc.others.delete: true
+      sc.nolimits: true
+  sc.upload.*:
+    description: Gives access to upload mp3, midi and webradio files
+    children:
+      sc.upload.mp3: true
+      sc.upload.midi: true
+  sc.set.*:
+    description: Allows you to set everything (boxes, areas, biomes, worlds) (also overlapping)
+    children:
+      sc.set.area: true
+      sc.set.box: true
+      sc.set.biome: true
+      sc.set.world: true
+      sc.set.overlap: true
+  sc.others.*:
+    description: Allows you to list/ edit/ delete other player's boxes, areas and songs
+    children:
+      sc.others.use.songs: true
+      sc.others.edit: true
+      sc.others.delete: true
+  sc.init:
+    description: Allows you to use the audio client
+    default: true
+  sc.upload.midi:
+    description: Allows you to upload midi files
+    default: op
+  sc.upload.mp3:
+    description: Allows you to upload mp3 files
+    default: op
+  sc.set.box:
+    description: Allows you to set boxes
+    default: op
+  sc.set.area:
+    description: Allows you to set areas
+    default: op
+  sc.set.biome:
+    description: Allows you to manage biome-specific music
+    default: op
+  sc.set.world:
+    description: Allows you to manage world-specific music
+    default: op
+  sc.set.overlap:
+    description: Allows you to set overlapping areas/ boxes
+    default: op
+  sc.play.global:
+    description: Allows you to play a song for every player
+    default: op
+  sc.speak: 
+    description: Allows you to use voice chat
+    default: op
+  sc.speak.global: 
+    description: Allows you to use voice chat globally
+    default: op
+  sc.others.use.songs:
+    description: Allows you to use other player's songs
+    default: op
+  sc.others.edit:
+    description: Allows you to edit other player's boxes/ areas etc.
+    default: op
+  sc.others.delete:
+    description: Allows you to delete other player's boxes/ areas etc.
+    default: op
+  sc.nolimits:
+    description: Unlimited number of boxes/ areas etc., files, file size, ...
+    default: op
