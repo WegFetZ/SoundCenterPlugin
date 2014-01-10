@@ -62,7 +62,7 @@ public class Configuration {
 		port = cfg.getInt("Port");
 		serverCapacity = cfg.getInt("Max-Users");
 		defaultBoxRange = cfg.getInt("Default-Box-Range");
-		defaultFadeout = cfg.getInt("Default-Area/Biome-Fadeout");
+		defaultFadeout = cfg.getInt("Default-Area-Fadeout");
 		voiceRange = cfg.getInt("Voice-Range");
 		maxBoxRange = cfg.getInt("Max-Box-Range");
 		maxAreaSize = cfg.getInt("Max-Area-Edge-Length");
