@@ -9,6 +9,9 @@ build.xml
 target/
 /target
 
+# fatjar
+*.fatjar
+
 # other
 /build
 /bin
