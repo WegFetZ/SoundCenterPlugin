@@ -124,8 +124,4 @@ public class SoundCenter extends JavaPlugin {
 
 		logger.i("SoundCenter disabled!", null);
 	}
-
-	// used for easier export from eclipse
-	public static void main(String[] args) {
-	}
 }

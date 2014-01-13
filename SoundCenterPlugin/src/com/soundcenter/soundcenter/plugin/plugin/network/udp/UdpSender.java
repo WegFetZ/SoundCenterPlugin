@@ -100,9 +100,16 @@ public class UdpSender {
 							, singleReceptor.getIp(), singleReceptor.getUdpPort());
 					datagramSocket.send(packet);
 				}
+			} catch (SecurityException e) {
+				if (!SoundCenter.udpServer.exit) {
+					SoundCenter.logger.w("SecurityException while sending UDP-Packet:", e);
+				}
+				SoundCenter.udpServer.shutdown();
 			} catch (IOException e) {
-				if (!SoundCenter.udpServer.exit)
+				if (!SoundCenter.udpServer.exit) {
 					SoundCenter.logger.i("Error while sending UDP-Packet:", e);
+				}
+				SoundCenter.udpServer.shutdown();
 			}
 		}
 	}
