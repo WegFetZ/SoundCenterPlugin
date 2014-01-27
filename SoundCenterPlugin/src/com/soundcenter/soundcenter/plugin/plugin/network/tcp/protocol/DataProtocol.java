@@ -19,6 +19,7 @@ import com.soundcenter.soundcenter.lib.util.StringUtil;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.plugin.network.SongManager;
+import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
 
 public class DataProtocol {
 
@@ -97,6 +98,7 @@ public class DataProtocol {
 			}
 
 			SoundCenter.database.addStation(type, newStation);
+			StreamManager.shutdownSession(type, id); //session needs to be restarted
 			SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_STATION, newStation, null, null);
 			return true;
 
