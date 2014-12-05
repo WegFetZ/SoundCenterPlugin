@@ -1,6 +1,6 @@
 name: SoundCenter
 main: com.soundcenter.soundcenter.plugin.SoundCenter
-version: 0.100
+version: 0.110
 commands:
   sc:
     aliases: soundcenter

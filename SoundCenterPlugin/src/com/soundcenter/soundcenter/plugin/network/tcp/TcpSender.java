@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp;
+package com.soundcenter.soundcenter.plugin.network.tcp;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -6,11 +6,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
+
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacketContainer;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
 
 public class TcpSender implements Runnable {
 

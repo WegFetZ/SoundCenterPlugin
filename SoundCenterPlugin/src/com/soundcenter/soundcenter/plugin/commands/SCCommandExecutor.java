@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.commands;
+package com.soundcenter.soundcenter.plugin.commands;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +20,11 @@ import com.soundcenter.soundcenter.lib.data.SCLocation;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
-import com.soundcenter.soundcenter.plugin.plugin.network.tcp.ConnectionManager;
-import com.soundcenter.soundcenter.plugin.plugin.util.IntersectionDetection;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.messages.Messages;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.network.tcp.ConnectionManager;
+import com.soundcenter.soundcenter.plugin.util.IntersectionDetection;
 
 public class SCCommandExecutor implements CommandExecutor{
 

@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
-import com.soundcenter.soundcenter.plugin.plugin.network.tcp.ConnectionManager;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.network.tcp.ConnectionManager;
 
 public class SCPlayerListener implements Listener{
 	

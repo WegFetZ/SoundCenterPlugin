@@ -1,8 +1,9 @@
-package com.soundcenter.soundcenter.plugin.plugin.network;
+package com.soundcenter.soundcenter.plugin.network;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import org.bukkit.entity.Player;
 
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
@@ -10,7 +11,7 @@ import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
 
 public class SongManager {
 	

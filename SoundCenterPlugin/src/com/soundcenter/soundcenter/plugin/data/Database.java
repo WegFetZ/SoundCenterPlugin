@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.data;
+package com.soundcenter.soundcenter.plugin.data;
 
 import java.io.Serializable;
 import java.util.Map.Entry;

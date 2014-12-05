@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp.protocol;
+package com.soundcenter.soundcenter.plugin.network.tcp.protocol;
 
 import org.bukkit.entity.Player;
 
@@ -7,9 +7,9 @@ import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.messages.Messages;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class StreamProtocol {
 

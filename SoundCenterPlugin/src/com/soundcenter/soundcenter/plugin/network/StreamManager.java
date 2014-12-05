@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network;
+package com.soundcenter.soundcenter.plugin.network;
 
 import java.io.File;
 import java.util.Map.Entry;
@@ -9,8 +9,8 @@ import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.data.Station;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.network.udp.StreamSession;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.network.udp.StreamSession;
 
 public class StreamManager {
 		

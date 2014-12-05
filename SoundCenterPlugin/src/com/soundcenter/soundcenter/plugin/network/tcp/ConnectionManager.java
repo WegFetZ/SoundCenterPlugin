@@ -1,12 +1,12 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp;
+package com.soundcenter.soundcenter.plugin.network.tcp;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.messages.Messages;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.messages.Messages;
 
 public class ConnectionManager {
 

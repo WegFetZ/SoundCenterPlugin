@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.data;
+package com.soundcenter.soundcenter.plugin.data;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class ServerUser {
 	private UserUploadManager uploadManager = null;
 	
 	/* udp */
-	private int udpPort = 4224;
+	private int udpPort = 0;
 	private short sequenceNr = Short.MIN_VALUE;
 	
 	/* misc */

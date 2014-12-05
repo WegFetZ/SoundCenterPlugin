@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.udp;
+package com.soundcenter.soundcenter.plugin.network.udp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.sampled.AudioFileFormat;
+
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
 import org.tritonus.share.sampled.file.TAudioFileFormat;
@@ -25,8 +26,8 @@ import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.udp.UdpPacket;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class StreamSession implements Runnable {
 

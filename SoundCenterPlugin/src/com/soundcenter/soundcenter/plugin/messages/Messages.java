@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.messages;
+package com.soundcenter.soundcenter.plugin.messages;
 
 import org.bukkit.ChatColor;
 

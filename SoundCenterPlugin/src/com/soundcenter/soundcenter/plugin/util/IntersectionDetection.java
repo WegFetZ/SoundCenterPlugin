@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.util;
+package com.soundcenter.soundcenter.plugin.util;
 
 import java.util.HashMap;
 import java.util.Map;

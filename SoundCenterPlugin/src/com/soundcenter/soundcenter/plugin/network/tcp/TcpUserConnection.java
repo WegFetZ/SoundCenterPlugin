@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp;
+package com.soundcenter.soundcenter.plugin.network.tcp;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,12 +10,15 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 
+
+
+
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
-import com.soundcenter.soundcenter.plugin.plugin.network.tcp.protocol.MainProtocol;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.messages.Messages;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.network.tcp.protocol.MainProtocol;
 
 public class TcpUserConnection implements Runnable {
 

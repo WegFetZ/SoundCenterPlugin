@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.udp.UdpOpcodes;
 import com.soundcenter.soundcenter.lib.udp.UdpPacket;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.plugin.util.IntersectionDetection;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.messages.Messages;
+import com.soundcenter.soundcenter.plugin.util.IntersectionDetection;
 
 public class PositionsUpdater implements Runnable {
 

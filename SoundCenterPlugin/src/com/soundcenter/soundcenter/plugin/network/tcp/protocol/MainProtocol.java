@@ -1,9 +1,9 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp.protocol;
+package com.soundcenter.soundcenter.plugin.network.tcp.protocol;
 
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
 
 public class MainProtocol {
 

@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.udp;
+package com.soundcenter.soundcenter.plugin.network.udp;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,8 +10,8 @@ import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.udp.UdpOpcodes;
 import com.soundcenter.soundcenter.lib.udp.UdpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class UdpServer implements Runnable {
 
@@ -59,7 +59,7 @@ public class UdpServer implements Runnable {
 								sendVoiceGlobally(packet, user);
 							}
 						}
-					} else if (packet.getType() == UdpOpcodes.TYPE_GREET_PACKET) {
+					} else if (packet.getType() == UdpOpcodes.TYPE_HEARTBEAT) {
 						user.setUdpPort(receivedPacket.getPort());
 					}
 				}

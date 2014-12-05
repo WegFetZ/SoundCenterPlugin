@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.util;
+package com.soundcenter.soundcenter.plugin.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

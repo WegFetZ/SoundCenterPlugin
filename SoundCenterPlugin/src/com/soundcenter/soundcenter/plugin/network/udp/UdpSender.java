@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.udp;
+package com.soundcenter.soundcenter.plugin.network.udp;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.udp.UdpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
 
 public class UdpSender {
 	
@@ -81,24 +81,31 @@ public class UdpSender {
 		public void run() {
 			
 			dataPacket.setIdent(GlobalConstants.UDP_IDENT);
+			int receptorPort = 0;
 			
 			try {
 				if (receptors != null) {
 					for (ServerUser user : receptors) {
-						dataPacket.setDestUserID(user.getId());
-						dataPacket.setSeq(user.getSequenceNr());
-						user.incSequenceNr();
-						DatagramPacket packet = new DatagramPacket(dataPacket.getData(), dataPacket.getLength()
-								, user.getIp(), user.getUdpPort());
-						datagramSocket.send(packet);
+						receptorPort = user.getUdpPort();
+						if (receptorPort != 0) {
+							dataPacket.setDestUserID(user.getId());
+							dataPacket.setSeq(user.getSequenceNr());
+							user.incSequenceNr();
+							DatagramPacket packet = new DatagramPacket(dataPacket.getData(), dataPacket.getLength()
+									, user.getIp(), receptorPort);
+							datagramSocket.send(packet);
+						}
 					}
 				} else if (singleReceptor != null) {
-					dataPacket.setDestUserID(singleReceptor.getId());
-					dataPacket.setSeq(singleReceptor.getSequenceNr());
-					singleReceptor.incSequenceNr();
-					DatagramPacket packet = new DatagramPacket(dataPacket.getData(), dataPacket.getLength()
-							, singleReceptor.getIp(), singleReceptor.getUdpPort());
-					datagramSocket.send(packet);
+					receptorPort = singleReceptor.getUdpPort();
+					if (receptorPort != 0) {
+						dataPacket.setDestUserID(singleReceptor.getId());
+						dataPacket.setSeq(singleReceptor.getSequenceNr());
+						singleReceptor.incSequenceNr();
+						DatagramPacket packet = new DatagramPacket(dataPacket.getData(), dataPacket.getLength()
+								, singleReceptor.getIp(), receptorPort);
+						datagramSocket.send(packet);
+					}
 				}
 			} catch (SecurityException e) {
 				if (!SoundCenter.udpServer.exit) {

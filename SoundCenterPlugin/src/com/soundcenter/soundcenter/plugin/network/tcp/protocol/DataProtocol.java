@@ -1,4 +1,4 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp.protocol;
+package com.soundcenter.soundcenter.plugin.network.tcp.protocol;
 
 import java.io.File;
 import java.util.List;
@@ -17,9 +17,9 @@ import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.lib.util.StringUtil;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.plugin.network.SongManager;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.network.SongManager;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class DataProtocol {
 

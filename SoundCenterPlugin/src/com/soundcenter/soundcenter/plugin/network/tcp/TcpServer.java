@@ -1,11 +1,12 @@
-package com.soundcenter.soundcenter.plugin.plugin.network.tcp;
+package com.soundcenter.soundcenter.plugin.network.tcp;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
 
+
 import com.soundcenter.soundcenter.plugin.SoundCenter;
-import com.soundcenter.soundcenter.plugin.plugin.data.ServerUser;
+import com.soundcenter.soundcenter.plugin.data.ServerUser;
 
 public class TcpServer implements Runnable {
 	

@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.util.TimerTask;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
-import com.soundcenter.soundcenter.plugin.plugin.commands.SCCommandExecutor;
-import com.soundcenter.soundcenter.plugin.plugin.data.Database;
-import com.soundcenter.soundcenter.plugin.plugin.data.UserList;
-import com.soundcenter.soundcenter.plugin.plugin.network.StreamManager;
-import com.soundcenter.soundcenter.plugin.plugin.network.tcp.TcpServer;
-import com.soundcenter.soundcenter.plugin.plugin.network.udp.UdpServer;
-import com.soundcenter.soundcenter.plugin.plugin.util.SCLogger;
+import com.soundcenter.soundcenter.plugin.commands.SCCommandExecutor;
+import com.soundcenter.soundcenter.plugin.data.Database;
+import com.soundcenter.soundcenter.plugin.data.UserList;
+import com.soundcenter.soundcenter.plugin.network.StreamManager;
+import com.soundcenter.soundcenter.plugin.network.tcp.TcpServer;
+import com.soundcenter.soundcenter.plugin.network.udp.UdpServer;
+import com.soundcenter.soundcenter.plugin.util.SCLogger;
 
 public class SoundCenter extends JavaPlugin {
 
