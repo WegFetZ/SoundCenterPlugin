@@ -29,6 +29,7 @@ public class PositionsUpdater implements Runnable {
 		int k;
 		Player player;
 		ServerUser onlineUser;
+		Location loc;
 		while (!exit) {
 			timeA = System.currentTimeMillis();
 			
@@ -39,7 +40,7 @@ public class PositionsUpdater implements Runnable {
 				for (ServerUser user : userList) {
 					player = user.getPlayer();
 					if (player != null && user.isInitialized()) {
-						Location loc = player.getLocation();
+						loc = player.getLocation();
 						UdpPacket packet = new UdpPacket(GlobalConstants.LOCATION_PACKET_SIZE);
 						packet.setType(UdpOpcodes.INFO_LOCATION);
 						packet.setLocation(loc);
@@ -53,7 +54,7 @@ public class PositionsUpdater implements Runnable {
 									short distance = IntersectionDetection.playerCanHear(onlineUser.getPlayer(),
 											user.getPlayer(), SoundCenter.config.voiceRange());
 									if (distance >= 0) {
-										byte volumePercent = (byte) (100 - ((double)distance / (double)SoundCenter.config.voiceRange())*100 );
+										byte volumePercent = (byte) (100 - ((double)distance / (double)SoundCenter.config.voiceRange())*100.d );
 										if (onlineUser.isVoiceActive()) {
 											user.addListener(onlineUser, volumePercent);
 										}
