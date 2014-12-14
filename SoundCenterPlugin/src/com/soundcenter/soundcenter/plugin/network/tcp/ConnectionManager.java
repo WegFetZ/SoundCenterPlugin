@@ -55,8 +55,12 @@ public class ConnectionManager {
 	}
 
 	public static void sendStartClientMessage(Player player) {
-		player.sendMessage(Messages.INFO_START_AUDIOCLIENT_PT1 + "http://www.sound-center.com?n=" 
-				+ player.getName() + "&i=" + Bukkit.getServer().getIp() + "&p=" 
+		String ip = SoundCenter.config.serverIp();
+		if (ip.isEmpty()) {
+			ip = Bukkit.getServer().getIp();
+		}
+		player.sendMessage(Messages.INFO_START_AUDIOCLIENT_PT1 + "http://sound-center.com?n=" 
+				+ player.getName() + "&i=" + ip + "&p=" 
 				+ SoundCenter.config.port() + "&v=" + SoundCenter.MIN_CL_VERSION + " " 
 				+ Messages.INFO_START_AUDIOCLIENT_PT2);
 	}
