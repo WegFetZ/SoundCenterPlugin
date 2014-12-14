@@ -1,9 +1,13 @@
 package com.soundcenter.soundcenter.plugin.network.tcp;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 
+
+
+import java.net.UnknownHostException;
 
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
@@ -16,22 +20,35 @@ public class TcpServer implements Runnable {
 	private TcpSender tcpSender = null;
 	private Thread tcpSenderThread = null;
 	private int tcpPort = 0;
+	private String serverIp = "";
 	
-	public TcpServer(int port) {
+	public TcpServer(int port, String serverIp) {
 		this.tcpPort = port;
+		this.serverIp = serverIp;
 	}
 	
 	@Override
 	public void run() {
 		active = true;
 		try {
-			serverSocket = new ServerSocket(tcpPort);
+			String addrLogString = "";
+			if (!serverIp.isEmpty()) {
+				InetAddress addr = InetAddress.getByName(serverIp);
+				serverSocket = new ServerSocket(tcpPort, 50, addr);
+				addrLogString = addr.getHostAddress() + ": ";
+			} else {
+				serverSocket = new ServerSocket(tcpPort);
+				addrLogString ="port: ";
+			}
 			
 			tcpSender = new TcpSender();
 			tcpSenderThread = new Thread(tcpSender);
 			tcpSenderThread.start();
 			
-			SoundCenter.logger.i("TCP-Server started on port " + tcpPort + ".", null);
+			SoundCenter.logger.i("TCP-Server started on " + addrLogString + tcpPort + ".", null);
+		} catch (UnknownHostException e) {
+			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverIp, e);
+			exit = true;
 		} catch (IOException e) {
 			SoundCenter.logger.s("Error while starting TCP-Server on port " + tcpPort, e);
 			exit = true;

@@ -13,6 +13,7 @@ public class Configuration {
 	private boolean debug;
 	private boolean verifyIp;
 	private boolean voiceEnabled;
+	private String serverIp;
 	private int port;
 	private int serverCapacity;
 	private int defaultBoxRange;
@@ -39,6 +40,7 @@ public class Configuration {
         cfg.addDefaults(new HashMap<String,Object>(){
 			{
             	put("Debug-Mode", false);
+            	put("Server-IP", "");
             	put("Port", 4224);
             	put("Max-Users", 50);
             	put("Verify-By-IP-Address", true);
@@ -59,6 +61,7 @@ public class Configuration {
         debug = cfg.getBoolean("Debug-Mode");
         verifyIp = cfg.getBoolean("Verify-By-IP-Address");
         voiceEnabled = cfg.getBoolean("Enable-Voice-Chat");
+        serverIp = cfg.getString("Server-IP");
 		port = cfg.getInt("Port");
 		serverCapacity = cfg.getInt("Max-Users");
 		defaultBoxRange = cfg.getInt("Default-Box-Range");
@@ -78,6 +81,7 @@ public class Configuration {
 	public boolean debug() { return debug; }
 	public boolean verifyIp() { return verifyIp; }
 	public boolean voiceEnabled() { return voiceEnabled; }
+	public String serverIp() { return serverIp; }
 	public int port() { return port; }
 	public int serverCapacity() { return serverCapacity; }
 	public int defaultBoxRange() { return defaultBoxRange; }
