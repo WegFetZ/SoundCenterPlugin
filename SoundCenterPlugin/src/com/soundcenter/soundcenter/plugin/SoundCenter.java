@@ -90,8 +90,8 @@ public class SoundCenter extends JavaPlugin {
 		
 
 		// start server
-		tcpServer = new TcpServer(config.port());
-		udpServer = new UdpServer(config.port());
+		tcpServer = new TcpServer(config.port(), config.serverIp());
+		udpServer = new UdpServer(config.port(), config.serverIp());
 		new Thread(tcpServer).start();
 		new Thread(udpServer).start();
 		new Thread(positionsUpdater).start();

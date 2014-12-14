@@ -91,9 +91,8 @@ public class Messages {
 													+ "Range must be higher than 0! Using default range.";
 	
 	public static final String ERR_SENDER_NO_PLAYER = prefix + RED 
-															+ "You must be player to use commands other than "
-															+ GREEN  + "/sc reload " + RED 
-															+ "and " + GREEN + "/sc help" + RED + ".";
+															+ "You must be a player to use commands other than "
+															+ GREEN + "/sc help" + RED + ".";
 	public static final String ERR_IP_VERIFICATION = prefix + RED
 													+ "IP-Verification failed! Cannot use audioclient.";
 	public static final String ERR_NOT_ACCEPTED = prefix + "Oh noes! Something went wrong with initialization! "
