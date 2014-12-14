@@ -3,7 +3,9 @@ package com.soundcenter.soundcenter.plugin.network.udp;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
@@ -20,21 +22,35 @@ public class UdpServer implements Runnable {
 	public DatagramSocket datagramSocket = null;
 	private UdpSender udpSender = null;
 	private int udpPort = 4224;
+	private String serverIp = "";
 	
-	public UdpServer(int port) {
+	public UdpServer(int port, String serverIp) {
 		this.udpPort = port;
+		this.serverIp = serverIp;
 	}
 	
 	public void run() {
 		active = true;
 		try {
-			datagramSocket = new DatagramSocket(udpPort);
+			String addrLogString = "";
+			if (!serverIp.isEmpty()) {
+				InetAddress addr = InetAddress.getByName(serverIp);
+				datagramSocket = new DatagramSocket(udpPort, addr);
+				addrLogString = addr.getHostAddress() + ": ";
+			} else {
+				datagramSocket = new DatagramSocket(udpPort);
+				addrLogString ="port: ";
+			}
+			
 			
 			udpSender = new UdpSender(datagramSocket);
 			
-			SoundCenter.logger.i("UDP-Server started on port " + udpPort + ".", null);
+			SoundCenter.logger.i("UDP-Server started on " + addrLogString + udpPort + ".", null);
 		} catch (SocketException e) {
-			SoundCenter.logger.s("Error while starting UDP-Server on port " + udpPort, e);
+			SoundCenter.logger.s("Error while starting UDP-Server on port" + udpPort, e);
+			exit = true;
+		} catch (UnknownHostException e) {
+			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverIp, e);
 			exit = true;
 		}
 		
