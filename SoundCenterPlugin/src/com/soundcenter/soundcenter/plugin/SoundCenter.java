@@ -18,8 +18,8 @@ import com.soundcenter.soundcenter.plugin.util.SCLogger;
 
 public class SoundCenter extends JavaPlugin {
 
-	public static final double MIN_CL_VERSION = 0.100;
-	public static final double MAX_CL_VERSION = 0.199;
+	public static final double MIN_CL_VERSION = 0.200;
+	public static final double MAX_CL_VERSION = 0.299;
 
 	public static String musicDataFolder = "";
 	public static Configuration config = null;
