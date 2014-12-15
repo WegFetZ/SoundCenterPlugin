@@ -57,10 +57,32 @@ public class SCCommandExecutor implements CommandExecutor{
 		
 		/* sc init */
 		if (args[0].equalsIgnoreCase("init")) {
-			if (sender instanceof Player)
-				ConnectionManager.initialize((Player) sender);
+			ConnectionManager.initialize(player);
 			return true;
 		
+		/* sc users */
+		} else if (args[0].equalsIgnoreCase("users")) {
+			if (!player.hasPermission("sc.init")) {
+				player.sendMessage(Messages.ERR_PERMISSION_INIT);
+				return true;
+			}
+			int numUsers = 0;
+			String users = ".";
+			ServerUser user;
+			for (Entry<Short, ServerUser> entry : SoundCenter.userList.acceptedUsers.entrySet()) {
+				user = entry.getValue();
+				if (user.isInitialized()) {
+					if (numUsers == 0) {
+						users = ": ";
+					} else {
+						users += ", " + user.getName();
+					}
+					numUsers ++;
+				}
+			}
+			player.sendMessage(Messages.INFO_USERS + numUsers + users);
+			return true;
+			
 		/* sc mute */
 		} else if (args[0].equalsIgnoreCase("mute")) {
 			ServerUser user = SoundCenter.userList.getAcceptedUserByName(player.getName());
