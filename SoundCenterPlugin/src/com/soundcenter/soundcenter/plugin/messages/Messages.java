@@ -18,6 +18,7 @@ public class Messages {
 													+ "Vist " + BLUE + ChatColor.UNDERLINE ;
 	public static final String INFO_START_AUDIOCLIENT_PT2 =  "" + ChatColor.RESET + GREEN + " to use ingame-music and voice chat.";
 	public static final String INFO_INIT_SUCCESS = prefix + GREEN + "AudioClient initialized!";
+	public static final String INFO_USERS = prefix + GREEN + "Players using SoundCenter: ";
 	public static final String INFO_USER_MUTED = prefix + GREEN + "Muted user: ";
 	public static final String INFO_USER_UNMUTED = prefix + GREEN + "Unmuted user: ";
 	public static final String INFO_MUSIC_MUTED = prefix + GREEN + "Music muted!";
