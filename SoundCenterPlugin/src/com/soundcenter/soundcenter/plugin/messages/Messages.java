@@ -27,7 +27,9 @@ public class Messages {
 	public static final String INFO_VOICE_UNMUTED = prefix + GREEN + "Voice chat unmuted!";
 	public static final String INFO_VOLUME_CHANGED = prefix + GREEN + "Volume set to ";
 	public static final String INFO_AREA_CREATED = prefix + GREEN + "Area created! Use the audioclient to change its settings. ID: ";
-	public static final String INFO_BOX_CREATED = prefix + GREEN + "Box created! Use the audioclient to change its settings. ID:";
+	public static final String INFO_BOX_CREATED = prefix + GREEN + "Box created! Use the audioclient to change its settings. ID: ";
+	public static final String INFO_WGREGION_CREATED = prefix + GREEN + "WorldGuard region set as SoundCenter station! "
+															+ "Use the audioclient to change its settings. ID: ";
 	public static final String INFO_SPEAKING = prefix + GREEN + "Voice chat enabled!";
 	public static final String INFO_SPEAKING_GLOBALLY = prefix + GREEN + "Global voice chat enabled!";
 	public static final String INFO_STILL_SPEAKING = prefix + "Your voice chat is still enabled! You can turn it off by using " 
@@ -37,13 +39,15 @@ public class Messages {
 	public static final String INFO_HELP = prefix + "Available commands: ( < > = required [ ] = optional )\n"
 											+ "- /sc init\n"
 											+ "- /sc status\n"
+											+ "- /sc users\n"
 											+ "- /sc toggle <music|voice>\n"
 											+ "- /sc mute <name>\n"
 											+ "- /sc unmute <name>\n"
 											+ "- /sc volume <1-100>\n"
 											+ "- /sc set <box> [range]\n"
 											+ "- /sc set corner <1|2>\n"
-											+ "- /sc set area"
+											+ "- /sc set area\n"
+											+ "- /sc set wgregion <name>\n"
 											+ "- /sc speak [global]\n";
 	
 	public static final String CMD_USAGE_SC = prefix + "Use " + GREEN + "/sc help " + WHITE + "to get a list of all commands.";
@@ -53,8 +57,10 @@ public class Messages {
 	public static final String CMD_USAGE_VOLUME = prefix + "Use " + GREEN + "/sc volume <1 - 100> " + WHITE + ".";
 	public static final String CMD_USAGE_SET = prefix + "Use " + GREEN + "/sc set < box [range] | area | corner <1|2> >" 
 												+ WHITE + ".";
-	public static final String CMD_USAGE_CORNER = prefix + "Use " + GREEN + "/sc set corner <1|2>" 
-												+ WHITE + ".";
+	public static final String CMD_USAGE_SET_WGREGION = prefix + "Use " + GREEN + "/sc set wgregion <name>" 
+														+ WHITE + ".";
+	public static final String CMD_USAGE_SET_CORNERS = prefix + "Use " + GREEN + "/sc set corner <1|2>" 
+														+ WHITE + ".";
 	
 	
 	public static final String ERR_CONNECTION_LOST = prefix + RED + "Connection to AudioClient lost!";
@@ -66,13 +72,20 @@ public class Messages {
 														+ "have permission to set areas.";
 	public static final String ERR_PERMISSION_SET_BOX = prefix + RED + "Unfortunately you don't " 
 														+ "have permission to set boxes.";
+	public static final String ERR_PERMISSION_SET_WGREGION = prefix + RED + "Unfortunately you don't " 
+			+ "have permission to use WorldGuard regions.";
+	public static final String ERR_PERMISSION_SET_WGREGION_OTHERS = prefix + RED + "Unfortunately you don't " 
+			+ "have permission to use WorldGuard regions you are not a member of.";
 	public static final String ERR_PERMISSION_SET_OVERLAP = prefix + RED + "Unfortunately you don't " 
 														+ "have permission to set boxes/ areas that overlap "
-														+ "with existing boxes/ areas.";
+														+ "with existing boxes/ areas/ wgregions.";
 	public static final String ERR_PERMISSION_SPEAK = prefix + RED + "Unfortunately you don't " 
 														+ "have permission to use voice chat.";
 	public static final String ERR_PERMISSION_SPEAK_GLOBAL = prefix + RED + "Unfortunately you don't " 
 														+ "have permission to use global voice chat.";
+	public static final String ERR_LOAD_WORLDGUARD = prefix + RED + "Cannot load the WorldGuard plugin.";
+	public static final String ERR_WGREGION_ALREADY_EXISTANT = prefix + RED + "This region is already a SoundCenter station.";
+	public static final String ERR_WGREGION_NOT_EXISTANT = prefix + RED + "A WorldGuard region with this id doesn't exist.";
 	public static final String ERR_VOICE_CHAT_DISABLED = prefix + RED + "Voice chat is disabled on this server.";
 	
 	public static final String ERR_MUTE_PT1 = prefix + RED + "Cannot (un)mute ";
