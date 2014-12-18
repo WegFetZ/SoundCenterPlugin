@@ -76,7 +76,9 @@ public class UdpServer implements Runnable {
 							}
 						}
 					} else if (packet.getType() == UdpOpcodes.TYPE_HEARTBEAT) {
-						user.setUdpPort(receivedPacket.getPort());
+						if (user != null) {
+							user.setUdpPort(receivedPacket.getPort());
+						}
 					}
 				}
 			} catch (IOException e) {
