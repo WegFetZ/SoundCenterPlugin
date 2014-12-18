@@ -1,5 +1,6 @@
 package com.soundcenter.soundcenter.plugin.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -14,10 +15,16 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.soundcenter.soundcenter.lib.data.Area;
 import com.soundcenter.soundcenter.lib.data.Box;
 import com.soundcenter.soundcenter.lib.data.SCLocation;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
+import com.soundcenter.soundcenter.lib.data.SCLocation2D;
+import com.soundcenter.soundcenter.lib.data.Station;
+import com.soundcenter.soundcenter.lib.data.WGRegion;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
@@ -193,6 +200,13 @@ public class SCCommandExecutor implements CommandExecutor{
 			SCLocation loc = new SCLocation(player.getLocation());
 			HashMap<Short, Double> boxes = IntersectionDetection.inRangeOfBox(loc);
 			HashMap<Short, Double> areas = IntersectionDetection.isInArea(loc);
+			List<WGRegion> wgRegions = new ArrayList<WGRegion>();
+			for (Entry<Short, Station> entry : SoundCenter.database.wgRegions.entrySet()) {
+				ProtectedRegion region = SoundCenter.getWorldGuard().getRegionManager(player.getWorld()).getRegion(entry.getValue().getName());
+				if (region.contains(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ())) {
+					wgRegions.add((WGRegion) entry.getValue());
+				}
+			}
 			
 			// boxes
 			player.sendMessage(Messages.prefix + "You are in range of " + boxes.size() + " boxes:");
@@ -200,7 +214,7 @@ public class SCCommandExecutor implements CommandExecutor{
 				Box box = (Box) SoundCenter.database.getStation(GlobalConstants.TYPE_BOX, entry.getKey());
 				if (box != null) {
 					player.sendMessage(Messages.prefix + "- ID: " + box.getId() + ", owner: " + box.getOwner()
-							+ ", distance: " + entry.getValue());
+							+ ", distance: " + Math.round(entry.getValue()));
 				}
 			}
 			
@@ -210,7 +224,28 @@ public class SCCommandExecutor implements CommandExecutor{
 				Area area = (Area) SoundCenter.database.getStation(GlobalConstants.TYPE_AREA, entry.getKey());
 				if (area != null) {
 					player.sendMessage(Messages.prefix + "- ID: " + area.getId() + ", owner: " + area.getOwner()
-							+ ", distance to border: " + entry.getValue());
+							+ ", distance to border: " + Math.round(entry.getValue()));
+				}
+			}
+			
+			//wgregions
+			player.sendMessage(Messages.prefix + "You are located in " + wgRegions.size() + " WorldGuard regions:");
+			for (WGRegion wgRegion : wgRegions) {
+					player.sendMessage(Messages.prefix + "- Name: " + wgRegion.getName() + ", owner: " + wgRegion.getOwner());
+			}
+			
+			//biome
+			String biome = player.getWorld().getBiome(player.getLocation().getBlockX(), player.getLocation().getBlockZ()).toString(); 
+			for (Entry<Short, Station> entry : SoundCenter.database.biomes.entrySet()) {
+				if (entry.getValue().getName().equalsIgnoreCase(biome)) {
+					player.sendMessage(Messages.prefix + "You are in biome: ");
+				}
+			}
+			
+			//world
+			for (Entry<Short, Station> entry : SoundCenter.database.worlds.entrySet()) {
+				if (entry.getValue().getName().equalsIgnoreCase(player.getWorld().getName())) {
+					player.sendMessage(Messages.prefix + "You are in world: ");
 				}
 			}
 			return true;
@@ -274,6 +309,7 @@ public class SCCommandExecutor implements CommandExecutor{
 				}
 				
 				int radius = SoundCenter.config.defaultBoxRange();
+				
 				/* sc set box [range] */
 				if (args.length >= 3) {
 					try {
@@ -305,6 +341,65 @@ public class SCCommandExecutor implements CommandExecutor{
 				
 				return true;
 			
+			/* sc set wgregion */
+			} else if (args.length >= 2 && args[1].equalsIgnoreCase("wgregion")) {
+				
+				if (SoundCenter.getWorldGuard() == null) {
+					player.sendMessage(Messages.ERR_LOAD_WORLDGUARD);
+					return true;
+				}
+				
+				if (!player.hasPermission("sc.set.wgregion")) {
+					player.sendMessage(Messages.ERR_PERMISSION_SET_WGREGION);
+					return true;
+				}
+				
+				/* sc set wgregion <name> */
+				if (args.length >= 3) {
+					ProtectedRegion region = SoundCenter.getWorldGuard().getRegionManager(player.getWorld()).getRegion(args[2]);
+					if (region == null) {
+						player.sendMessage(Messages.ERR_WGREGION_NOT_EXISTANT);
+						return true;
+					}
+					
+					for (Entry<Short, Station> entry : SoundCenter.database.wgRegions.entrySet()) {
+						if (entry.getValue().getName().equalsIgnoreCase(args[2])) {
+							player.sendMessage(Messages.ERR_WGREGION_ALREADY_EXISTANT);
+							return true;
+						}
+					}
+					
+					LocalPlayer lPlayer = SoundCenter.getWorldGuard().wrapPlayer(player);
+					if (!region.isMember(lPlayer) && !player.hasPermission("sc.set.wgregion.nomember")) {
+						player.sendMessage(Messages.ERR_PERMISSION_SET_WGREGION_OTHERS);
+						return true;
+					}
+					
+					List<SCLocation2D> points = new ArrayList<SCLocation2D>();
+					for (BlockVector2D point : region.getPoints()) {
+						points.add(new SCLocation2D(point.getX(), point.getZ(), player.getWorld().getName()));
+					}
+			
+					SCLocation min = new SCLocation(region.getMinimumPoint().getX(), 
+							region.getMinimumPoint().getY(), region.getMinimumPoint().getZ(), 
+							player.getWorld().getName(), "null");
+					SCLocation max = new SCLocation(region.getMaximumPoint().getX(), 
+							region.getMaximumPoint().getY(), region.getMaximumPoint().getZ(), 
+							player.getWorld().getName(), "null");
+					WGRegion newRegion = new WGRegion(SoundCenter.database.getAvailableId(GlobalConstants.TYPE_WGREGION), player.getName(), args[2], min, max, points);
+					//TODO: intersection detection: for now we only check 
+							//if the center of a newly created box or the corners of a newly created area
+							//are in a worldguard region 
+					SoundCenter.database.addStation(GlobalConstants.TYPE_WGREGION, newRegion);
+					
+					player.sendMessage(Messages.INFO_WGREGION_CREATED + newRegion.getId());
+					SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_STATION, newRegion, null, null);
+					return true;
+				}
+				
+				player.sendMessage(Messages.CMD_USAGE_SET_WGREGION);
+				return true;
+				
 			/* sc set corner */
 			} else if (args.length >= 2 && args[1].equalsIgnoreCase("corner")) {
 				
@@ -358,7 +453,7 @@ public class SCCommandExecutor implements CommandExecutor{
 					return true;
 				} 	
 
-				player.sendMessage(Messages.CMD_USAGE_CORNER);
+				player.sendMessage(Messages.CMD_USAGE_SET_CORNERS);
 				return true;
 			}
 			
