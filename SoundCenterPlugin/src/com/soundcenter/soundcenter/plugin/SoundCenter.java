@@ -2,11 +2,22 @@ package com.soundcenter.soundcenter.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.TimerTask;
-
+import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
+import com.soundcenter.soundcenter.lib.data.SCLocation;
+import com.soundcenter.soundcenter.lib.data.SCLocation2D;
+import com.soundcenter.soundcenter.lib.data.Station;
+import com.soundcenter.soundcenter.lib.data.WGRegion;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.plugin.commands.SCCommandExecutor;
 import com.soundcenter.soundcenter.plugin.data.Database;
@@ -29,10 +40,12 @@ public class SoundCenter extends JavaPlugin {
 	public static UdpServer udpServer = null;
 	public static SCLogger logger = null;
 
-	private File dataFile = new File("plugins" + File.separator + "SoundCenter" + File.separator + "data.scdb");
+	public static File dataFile = new File("plugins" + File.separator + "SoundCenter" + File.separator + "data.scdb");
 	private int saveDataTaskId = 0;
 
-	private PositionsUpdater positionsUpdater = new PositionsUpdater();
+	private MainLoop mainLoop = new MainLoop();
+	
+	private static WorldGuardPlugin worldGuard = null;
 
 	@Override
 	public void onEnable() {
@@ -63,38 +76,54 @@ public class SoundCenter extends JavaPlugin {
 		if (dataFile.exists()) {
 			try {
 				database = (Database) FileOperation.loadObject(dataFile);
+				
+				if (getWorldGuard() == null) {
+					logger.i("WorldGuard not loaded.", null);
+				} else {
+					for (Entry<Short, Station> entry : database.wgRegions.entrySet()) {
+						WGRegion wgRegion = (WGRegion) entry.getValue();
+						World world = getServer().getWorld(wgRegion.getPoints().get(0).getWorld());
+						ProtectedRegion region = getWorldGuard().getRegionManager(world).getRegion(wgRegion.getName());
+						if (region == null) {
+							database.removeStation(wgRegion);
+						} else {
+							SCLocation min = new SCLocation(region.getMinimumPoint().getX(), 
+									region.getMinimumPoint().getY(), region.getMinimumPoint().getZ(), 
+									world.getName(), "null");
+							SCLocation max = new SCLocation(region.getMaximumPoint().getX(), 
+									region.getMaximumPoint().getY(), region.getMaximumPoint().getZ(), 
+									world.getName(), "null");
+							wgRegion.setMin(min);
+							wgRegion.setMax(max);
+							
+							List<SCLocation2D> points = new ArrayList<SCLocation2D>();
+							for (BlockVector2D point : region.getPoints()) {
+								points.add(new SCLocation2D(point.getX(), point.getZ(), world.getName()));
+							}
+							wgRegion.setPoints(points);
+						}
+					}
+				}
+				
 				logger.i(
 						"Database loaded: " + database.areas.size() + " areas, " + database.boxes.size() + " boxes, "
-								+ database.getStationCount(GlobalConstants.TYPE_BIOME) + " biome settings and "
-								+ database.getStationCount(GlobalConstants.TYPE_WORLD) + " world settings.", null);
+								+ database.getStationCount(GlobalConstants.TYPE_BIOME) + " biome settings, "
+								+ database.getStationCount(GlobalConstants.TYPE_WORLD) + " world settings and " 
+								+ database.getStationCount(GlobalConstants.TYPE_WGREGION) + ".", null);				
 			} catch (IOException e) {
 				logger.w("Error while loading data.", e);
 			} catch (ClassNotFoundException e) {
 				logger.w("Error while loading data.", e);
 			}
 		} else
-			database = new Database();
-
-		// save the database every 5 minutes
-		saveDataTaskId = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					FileOperation.saveObject(dataFile, database);
-					SoundCenter.logger.d("Database saved.", null);
-				} catch (IOException e) {
-					SoundCenter.logger.w("Error while saving data.", e);
-				}
-			}
-		}, 20 * 60 * 2, 20 * 60 * 5); // 20 ticks = 1 second
-		
+			database = new Database();		
 
 		// start server
 		tcpServer = new TcpServer(config.port(), config.serverIp());
 		udpServer = new UdpServer(config.port(), config.serverIp());
 		new Thread(tcpServer).start();
 		new Thread(udpServer).start();
-		new Thread(positionsUpdater).start();
+		new Thread(mainLoop).start();
 
 	}
 
@@ -102,7 +131,7 @@ public class SoundCenter extends JavaPlugin {
 		StreamManager.shutdownAll();
 		tcpServer.shutdown();
 		udpServer.shutdown();
-		positionsUpdater.shutdown();
+		mainLoop.shutdown();
 		
 		//stop saving the database
 		this.getServer().getScheduler().cancelTask(saveDataTaskId);
@@ -124,5 +153,20 @@ public class SoundCenter extends JavaPlugin {
 		}
 
 		logger.i("SoundCenter disabled!", null);
+	}
+	
+	public static WorldGuardPlugin getWorldGuard() {
+		if (worldGuard == null) {
+			Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+			 
+		    // WorldGuard may not be loaded
+		    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+		        return null;
+		    }
+		    
+		    worldGuard = (WorldGuardPlugin) plugin;
+		}
+		
+		return worldGuard;
 	}
 }
