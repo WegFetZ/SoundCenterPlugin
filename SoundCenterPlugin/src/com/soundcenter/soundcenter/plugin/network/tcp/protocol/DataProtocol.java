@@ -83,6 +83,12 @@ public class DataProtocol {
 					SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_EDIT_RANGE, maxRange, null, null);
 					return true;
 				}
+			} else if (type == GlobalConstants.TYPE_WGREGION) {
+				// new world must have the same name
+				if (!oldStation.getName().equals(newStation.getName())) {
+					SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "edit wgregion", null, user);
+					return true;
+				}
 			} else if (type == GlobalConstants.TYPE_BIOME) {
 				// new biome must have the same name
 				if (!oldStation.getName().equals(newStation.getName())) {
@@ -228,6 +234,14 @@ public class DataProtocol {
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_STATION, box, null, user);
 			}
 
+			// send list of wgregions
+			if (SoundCenter.getWorldGuard() != null) {
+				for (Entry<Short, Station> entry : SoundCenter.database.wgRegions.entrySet()) {
+					Station wgregion = entry.getValue();
+					SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_STATION, wgregion, null, user);
+				}
+			}
+			
 			// send list of biomes
 			for (Entry<Short, Station> entry : SoundCenter.database.biomes.entrySet()) {
 				Station biome = entry.getValue();

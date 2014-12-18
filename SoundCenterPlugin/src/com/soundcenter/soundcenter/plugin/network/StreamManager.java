@@ -18,6 +18,8 @@ public class StreamManager {
 	private static ConcurrentHashMap<Short, StreamSession> boxSessions = new ConcurrentHashMap<Short, StreamSession>();
 	private static ConcurrentHashMap<Short, StreamSession> biomeSessions = new ConcurrentHashMap<Short, StreamSession>();
 	private static ConcurrentHashMap<Short, StreamSession> worldSessions = new ConcurrentHashMap<Short, StreamSession>();
+	private static ConcurrentHashMap<Short, StreamSession> wgRegionSessions = new ConcurrentHashMap<Short, StreamSession>();
+	
 	public static StreamSession globalSession = null;
 	
 	public static long totalVoiceRate = 0;
@@ -109,6 +111,10 @@ public class StreamManager {
 			StreamSession session = entry.getValue();
 			session.shutdown();
 		}
+		for (Entry<Short, StreamSession> entry : wgRegionSessions.entrySet()) {
+			StreamSession session = entry.getValue();
+			session.shutdown();
+		}
 		if (globalSession != null) {
 			globalSession.shutdown();
 		}
@@ -128,6 +134,10 @@ public class StreamManager {
 			session.removeListener(user);
 		}
 		for (Entry<Short, StreamSession> entry : worldSessions.entrySet()) {
+			StreamSession session = entry.getValue();
+			session.removeListener(user);
+		}
+		for (Entry<Short, StreamSession> entry : wgRegionSessions.entrySet()) {
 			StreamSession session = entry.getValue();
 			session.removeListener(user);
 		}
@@ -175,6 +185,10 @@ public class StreamManager {
 			StreamSession session = entry.getValue();
 			session.releaseFile(file);
 		}
+		for (Entry<Short, StreamSession> entry : wgRegionSessions.entrySet()) {
+			StreamSession session = entry.getValue();
+			session.releaseFile(file);
+		}
 		if (globalSession != null) {
 			globalSession.releaseFile(file);
 		}
@@ -206,6 +220,8 @@ public class StreamManager {
 			
 		case GlobalConstants.TYPE_WORLD:
 			return worldSessions;
+		case GlobalConstants.TYPE_WGREGION:
+			return worldSessions;
 		default:
 			return null;
 		}
@@ -226,6 +242,10 @@ public class StreamManager {
 			totalRate += session.getTotalRate();
 		}
 		for (Entry<Short, StreamSession> entry : worldSessions.entrySet()) {
+			StreamSession session = entry.getValue();
+			totalRate += session.getTotalRate();
+		}
+		for (Entry<Short, StreamSession> entry : wgRegionSessions.entrySet()) {
 			StreamSession session = entry.getValue();
 			totalRate += session.getTotalRate();
 		}
