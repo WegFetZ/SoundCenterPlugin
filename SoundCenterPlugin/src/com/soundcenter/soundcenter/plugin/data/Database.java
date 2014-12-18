@@ -1,5 +1,7 @@
 package com.soundcenter.soundcenter.plugin.data;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -9,6 +11,8 @@ import com.soundcenter.soundcenter.lib.data.Area;
 import com.soundcenter.soundcenter.lib.data.Box;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.data.Station;
+import com.soundcenter.soundcenter.lib.util.FileOperation;
+import com.soundcenter.soundcenter.plugin.SoundCenter;
 
 public class Database implements Serializable {
 
@@ -21,6 +25,7 @@ public class Database implements Serializable {
 	public ConcurrentHashMap<Short, Station> areas = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> biomes = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> worlds = new ConcurrentHashMap<Short, Station>();
+	public ConcurrentHashMap<Short, Station> wgRegions = new ConcurrentHashMap<Short, Station>();
 	private ConcurrentHashMap<String, Integer> boxCounts = new ConcurrentHashMap<String, Integer>();
 	private ConcurrentHashMap<String, Integer> areaCounts = new ConcurrentHashMap<String, Integer>();
 
@@ -30,6 +35,7 @@ public class Database implements Serializable {
 			map.put(station.getId(), station);
 			incrementCounter(station);
 		}
+		saveToDisk();
 	}
 
 	public Station getStation(byte type, short id) {
@@ -92,6 +98,8 @@ public class Database implements Serializable {
 			}
 		}
 
+		saveToDisk();
+		
 		return station;
 	}
 
@@ -124,6 +132,15 @@ public class Database implements Serializable {
 		}
 		for (Entry<Short, Station> entry : worlds.entrySet()) {
 			entry.getValue().removeSong(path);
+		}
+		for (Entry<Short, Station> entry : wgRegions.entrySet()) {
+			entry.getValue().removeSong(path);
+		}
+		
+		try {
+			FileOperation.saveObject(SoundCenter.dataFile, this);
+		} catch (IOException e) {
+			SoundCenter.logger.w("Error while saving data.", e);
 		}
 	}
 
@@ -177,8 +194,26 @@ public class Database implements Serializable {
 			return biomes;
 		case GlobalConstants.TYPE_WORLD:
 			return worlds;
+		case GlobalConstants.TYPE_WGREGION:
+			return wgRegions;
 		default:
 			return null;
 		}
+	}
+	
+	private void saveToDisk() {
+		try {
+			FileOperation.saveObject(SoundCenter.dataFile, this);
+		} catch (IOException e) {
+			SoundCenter.logger.w("Error while saving data.", e);
+		}
+	}
+	
+	/* we need to set default values for new variables, which aren't defined in the serialized object */
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+	    ois.defaultReadObject();
+	    if (wgRegions == null) {
+	    	wgRegions = new ConcurrentHashMap<Short, Station>();
+	    }
 	}
 }
