@@ -3,9 +3,11 @@ package com.soundcenter.soundcenter.plugin.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.soundcenter.soundcenter.lib.data.Area;
 import com.soundcenter.soundcenter.lib.data.Box;
 import com.soundcenter.soundcenter.lib.data.SCLocation;
@@ -59,6 +61,18 @@ public class IntersectionDetection {
             	return true;
         }		
 		
+		for (Map.Entry<Short, Station> entry : SoundCenter.database.wgRegions.entrySet()) {
+			Station wgRegion = entry.getValue();
+			if (SoundCenter.getWorldGuard() != null) {
+				ProtectedRegion region = SoundCenter.getWorldGuard().getRegionManager(
+						Bukkit.getServer().getWorld(wgRegion.getWorld()))
+						.getRegion(wgRegion.getName());
+				if (region != null && region.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+					return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 	
@@ -83,6 +97,21 @@ public class IntersectionDetection {
             if (areasIntersect(newArea, oldArea))
             	return true;
         }
+		
+		for (Map.Entry<Short, Station> entry : SoundCenter.database.wgRegions.entrySet()) {
+			Station wgRegion = entry.getValue();
+			if (SoundCenter.getWorldGuard() != null) {
+				ProtectedRegion region = SoundCenter.getWorldGuard().getRegionManager(
+						Bukkit.getServer().getWorld(wgRegion.getWorld()))
+						.getRegion(wgRegion.getName());
+				if (region != null) {
+					if (region.contains(newArea.getMin().getBlockX(), newArea.getMin().getBlockY(), newArea.getMin().getBlockZ()))
+						return true;
+					if (region.contains(newArea.getMax().getBlockX(), newArea.getMax().getBlockY(), newArea.getMax().getBlockZ()))
+						return true;
+				}
+			}
+		}
 		
 		return false;
 	}

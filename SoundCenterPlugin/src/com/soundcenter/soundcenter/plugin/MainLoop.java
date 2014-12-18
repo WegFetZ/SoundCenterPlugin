@@ -10,7 +10,7 @@ import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.messages.Messages;
 import com.soundcenter.soundcenter.plugin.util.IntersectionDetection;
 
-public class PositionsUpdater implements Runnable {
+public class MainLoop implements Runnable {
 
 	private Thread thread = null;
 	private boolean exit = false;
