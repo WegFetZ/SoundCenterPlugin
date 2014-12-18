@@ -15,6 +15,8 @@ permissions:
       sc.upload.mp3: true
       sc.set.area: true
       sc.set.box: true
+      sc.set.wgregion: true
+      sc.set.wgregion.nomember: true
       sc.set.biome: true
       sc.set.world: true
       sc.set.overlap: true
@@ -31,13 +33,20 @@ permissions:
       sc.upload.mp3: true
       sc.upload.midi: true
   sc.set.*:
-    description: Allows you to set everything (boxes, areas, biomes, worlds) (also overlapping)
+    description: Allows you to set everything (boxes, areas, WorldGuard regions, biomes, worlds) (also overlapping)
     children:
       sc.set.area: true
       sc.set.box: true
+      sc.set.wgregion: true
+      sc.set.wgregion.nomember: true
       sc.set.biome: true
       sc.set.world: true
       sc.set.overlap: true
+  sc.set.wgregion.*:
+    description: Allows you to set WorldGuard regions (also if you are not a member of the region)
+    children:
+      sc.set.wgregion: true
+      sc.set.wgregion.nomember: true
   sc.others.*:
     description: Allows you to list/ edit/ delete other player's boxes, areas and songs
     children:
@@ -58,6 +67,12 @@ permissions:
     default: op
   sc.set.area:
     description: Allows you to set areas
+    default: op
+  sc.set.wgregion:
+    description: Allows you to set WorldGuard regions as a SoundCenter station
+    default: op
+  sc.set.wgregion.nomember:
+    description: Allows you to set WorldGuard regions as a SoundCenter station, even if you are not a member of the region
     default: op
   sc.set.biome:
     description: Allows you to manage biome-specific music
