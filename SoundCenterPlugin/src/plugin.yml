@@ -1,6 +1,6 @@
 name: SoundCenter
 main: com.soundcenter.soundcenter.plugin.SoundCenter
-version: 0.2
+version: 0.3
 commands:
   sc:
     aliases: soundcenter
@@ -11,8 +11,7 @@ permissions:
     description: Gives access to all SoundCenter commands
     children:
       sc.init: true
-      sc.upload.midi: true
-      sc.upload.mp3: true
+      sc.add.song: true
       sc.set.area: true
       sc.set.box: true
       sc.set.wgregion: true
@@ -27,11 +26,10 @@ permissions:
       sc.others.edit: true
       sc.others.delete: true
       sc.nolimits: true
-  sc.upload.*:
-    description: Gives access to upload mp3, midi and webradio files
+  sc.add.*:
+    description: Allows you to add songs (songs can also be radio streams)
     children:
-      sc.upload.mp3: true
-      sc.upload.midi: true
+      sc.add.song: true
   sc.set.*:
     description: Allows you to set everything (boxes, areas, WorldGuard regions, biomes, worlds) (also overlapping)
     children:
@@ -53,14 +51,16 @@ permissions:
       sc.others.use.songs: true
       sc.others.edit: true
       sc.others.delete: true
+  sc.speak.*:
+    description: Allows you to speak locally and globally
+    children:
+      sc.speak: true
+      sc.speak.global: true
   sc.init:
     description: Allows you to use the audio client
     default: true
-  sc.upload.midi:
-    description: Allows you to upload midi files
-    default: op
-  sc.upload.mp3:
-    description: Allows you to upload mp3 files
+  sc.add.song:
+    description: Allows you to add songs (songs can also be radio streams)
     default: op
   sc.set.box:
     description: Allows you to set boxes

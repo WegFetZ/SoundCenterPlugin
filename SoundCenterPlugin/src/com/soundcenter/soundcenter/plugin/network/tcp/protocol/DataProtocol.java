@@ -1,7 +1,5 @@
 package com.soundcenter.soundcenter.plugin.network.tcp.protocol;
 
-import java.io.File;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -14,29 +12,18 @@ import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.data.Station;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
-import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.lib.util.StringUtil;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.network.SongManager;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class DataProtocol {
 
 	public static boolean processPacket(byte cmd, TcpPacket receivedPacket, ServerUser user) {
 
-		//SoundCenter.logger.d("Processing packet in DataProtocol.", null);//TODO
+		//SoundCenter.logger.d("Processing packet in DataProtocol.", null);
 		
-		/* client sends a chunk of songdata */
-		if (cmd == TcpOpcodes.SV_DATA_SONG_CHUNK) {
-			byte[] chunk = (byte[]) receivedPacket.getKey();
-
-			user.receiveSongChunk(chunk);
-
-			return true;
-
 		/* client wants to edit a station */
-		} else if (cmd == TcpOpcodes.SV_DATA_CMD_EDIT_STATION) {
+		if (cmd == TcpOpcodes.SV_DATA_CMD_EDIT_STATION) {
 			Player player = user.getPlayer();
 			if (player == null) {
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "Could not get the Bukkit player instance.", null,
@@ -104,7 +91,6 @@ public class DataProtocol {
 			}
 
 			SoundCenter.database.addStation(type, newStation);
-			StreamManager.shutdownSession(type, id); //session needs to be restarted
 			SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_STATION, newStation, null, null);
 			return true;
 
@@ -168,33 +154,47 @@ public class DataProtocol {
 			
 			return true;
 
-		/* client stopped upload */
-		} else if (cmd == TcpOpcodes.SV_DATA_INFO_UPLOAD_ENDED) {
-			user.uploadEnded();
-			return true;
+		/* client wants to add a song */
+		} else if (cmd == TcpOpcodes.SV_DATA_CMD_ADD_SONG) {
+			Player player = user.getPlayer();
+			if (player == null) {
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "Could not get the Bukkit player instance.", null,
+						user);
+				return true;
+			}
 
-		/* client wants to upload a song */
-		} else if (cmd == TcpOpcodes.SV_DATA_CMD_RECEIVE_SONG) {
-			String songName = (String) receivedPacket.getKey();
-			long size = (Long) receivedPacket.getValue();
+			Song song = (Song) receivedPacket.getKey();
 
-			SongManager.receiveSong(songName, size, user);
+			if (player.hasPermission("sc.add.song")) {
+				song.setOwner(player.getName());
+				SoundCenter.database.addSong(song);
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, null);
+			} else {
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_CREATE_PERMISSION, "sc.add.song", null, user);
+			}
+		
 			return true;
 
 		/* client wants to delete a song */
 		} else if (cmd == TcpOpcodes.SV_DATA_CMD_DELETE_SONG) {
+			Player player = user.getPlayer();
+			if (player == null) {
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "Could not get the Bukkit player instance.", null,
+						user);
+				return true;
+			}
+
 			Song song = (Song) receivedPacket.getKey();
 
-			SongManager.deleteSong(song, user);
+			if (song.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission("sc.delete.others")) {
+				SoundCenter.database.removeSong(song);
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_CMD_DELETE_SONG, song, null, null);
+			} else {
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_CREATE_PERMISSION, "sc.delete.others", null, user);
+			}
+		
 			return true;
-
-		/* client wants to download a midi file */
-		} else if (cmd == TcpOpcodes.SV_DATA_REQ_SONG) {
-			Song song = (Song) receivedPacket.getKey();
-
-			SongManager.sendMidi(song, user);
-			return true;
-
+			
 		/* client requests area/box/biome and world data */
 		} else if (cmd == TcpOpcodes.SV_DATA_REQ_INFODATA) {
 
@@ -257,17 +257,13 @@ public class DataProtocol {
 			// send list of songs
 			// do not send songs of others if user has no persmission to use
 			// them
-			File musicDataFolder = new File(SoundCenter.musicDataFolder);
-			;
-			List<File> files = FileOperation.listAllFiles(musicDataFolder);
-			for (File file : files) {
-				if (!file.isDirectory() && GlobalConstants.supportedExtensions.contains(
-						FileOperation.getExtension(file.getName()))) {
-					Song song = new Song(file.getParentFile().getName(), file.getName(), file.length());
-					SoundCenter.tcpServer.send(TcpOpcodes.CL_INFODATA_SONG, song, null, user);
+			for (Entry<String, Song> entry : SoundCenter.database.songs.entrySet()) {
+				Song song = entry.getValue();
+				if (song.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission("sc.others.use.songs")) {
+					SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, user);
 				}
 			}
-
+			
 			// send list of permissions
 			for (String permission : GlobalConstants.permissions) {
 				if (player.hasPermission(permission)) {

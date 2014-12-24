@@ -13,6 +13,7 @@ public class UserList {
 	public ConcurrentHashMap<Short, ServerUser> acceptedUsers = new ConcurrentHashMap<Short, ServerUser>();
 	public ConcurrentHashMap<String, Short> acceptedUsersName = new ConcurrentHashMap<String, Short>();
 
+	private int initializedUserCount = 0;
 	
 	public void addConnectedUser(ServerUser user) {
 		connectedUsers.add(user);
@@ -40,11 +41,21 @@ public class UserList {
 		return connectedUsers.size();
 	}
 	
+	public int getInitializedUserCount() {
+		return initializedUserCount;
+	}
+	public void incrementInitializedUserCount() {
+		initializedUserCount++;
+	}
+	
 	public void removeServerUser(ServerUser user) {
 		connectedUsers.remove(user);
 		if (user.isAccepted()) {
 			acceptedUsersName.remove(user.getName());
 			acceptedUsers.remove(user.getId());
+			if (user.isInitialized()) {
+				initializedUserCount --;
+			}
 		}
 	}
 	

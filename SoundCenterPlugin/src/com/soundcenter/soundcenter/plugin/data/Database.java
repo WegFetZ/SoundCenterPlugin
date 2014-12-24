@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.soundcenter.soundcenter.lib.data.Area;
 import com.soundcenter.soundcenter.lib.data.Box;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
+import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.data.Station;
 import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
@@ -19,13 +20,16 @@ public class Database implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1872505392008447869L;
+	private static final long serialVersionUID = 4L;
 
+	private static final int DATABASE_VERSION = 4;
+	
 	public ConcurrentHashMap<Short, Station> boxes = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> areas = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> biomes = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> worlds = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> wgRegions = new ConcurrentHashMap<Short, Station>();
+	public ConcurrentHashMap<String, Song> songs = new ConcurrentHashMap<String, Song>();
 	private ConcurrentHashMap<String, Integer> boxCounts = new ConcurrentHashMap<String, Integer>();
 	private ConcurrentHashMap<String, Integer> areaCounts = new ConcurrentHashMap<String, Integer>();
 
@@ -120,28 +124,32 @@ public class Database implements Serializable {
 			return 0;
 	}
 
-	public void removeSongFromStations(String path) {
+	public void addSong(Song song) {
+		songs.put(song.toString(), song);
+		saveToDisk();
+	}
+	
+	public void removeSong(Song song) {
+		
+		songs.remove(song.toString());
+		
 		for (Entry<Short, Station> entry : areas.entrySet()) {
-			entry.getValue().removeSong(path);
+			entry.getValue().removeSong(song);
 		}
 		for (Entry<Short, Station> entry : boxes.entrySet()) {
-			entry.getValue().removeSong(path);
+			entry.getValue().removeSong(song);
 		}
 		for (Entry<Short, Station> entry : biomes.entrySet()) {
-			entry.getValue().removeSong(path);
+			entry.getValue().removeSong(song);
 		}
 		for (Entry<Short, Station> entry : worlds.entrySet()) {
-			entry.getValue().removeSong(path);
+			entry.getValue().removeSong(song);
 		}
 		for (Entry<Short, Station> entry : wgRegions.entrySet()) {
-			entry.getValue().removeSong(path);
+			entry.getValue().removeSong(song);
 		}
 		
-		try {
-			FileOperation.saveObject(SoundCenter.dataFile, this);
-		} catch (IOException e) {
-			SoundCenter.logger.w("Error while saving data.", e);
-		}
+		saveToDisk();
 	}
 
 	private void incrementCounter(Station station) {
@@ -211,9 +219,17 @@ public class Database implements Serializable {
 	
 	/* we need to set default values for new variables, which aren't defined in the serialized object */
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-	    ois.defaultReadObject();
+	    int classVersion = DATABASE_VERSION;
+	    
+		ois.defaultReadObject();
+		if (classVersion > DATABASE_VERSION) {
+			
+		}
 	    if (wgRegions == null) {
 	    	wgRegions = new ConcurrentHashMap<Short, Station>();
+	    }
+	    if (songs == null) {
+	    	songs = new ConcurrentHashMap<String, Song>();
 	    }
 	}
 }

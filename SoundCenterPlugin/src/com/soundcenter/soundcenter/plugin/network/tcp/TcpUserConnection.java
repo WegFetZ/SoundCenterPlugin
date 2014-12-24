@@ -17,7 +17,6 @@ import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 import com.soundcenter.soundcenter.plugin.network.tcp.protocol.MainProtocol;
 
 public class TcpUserConnection implements Runnable {
@@ -69,9 +68,7 @@ public class TcpUserConnection implements Runnable {
 		
 		user.disconnect();
 		
-		StreamManager.removeUserFromAllSessions(user);
-		
-		//remove user from all voice chats
+		//remove user from userList and all voice chats
 		List<ServerUser> userList = new ArrayList<ServerUser>(SoundCenter.userList.acceptedUsers.values());
 		for (ServerUser onlineUser : userList) {
 			onlineUser.removeListener(user);

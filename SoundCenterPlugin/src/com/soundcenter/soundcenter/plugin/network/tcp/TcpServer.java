@@ -35,7 +35,7 @@ public class TcpServer implements Runnable {
 			if (!serverIp.isEmpty()) {
 				InetAddress addr = InetAddress.getByName(serverIp);
 				serverSocket = new ServerSocket(tcpPort, 50, addr);
-				addrLogString = addr.getHostAddress() + ": ";
+				addrLogString = addr.getHostAddress() + ":";
 			} else {
 				serverSocket = new ServerSocket(tcpPort);
 				addrLogString ="port: ";

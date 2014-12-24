@@ -2,39 +2,21 @@ package com.soundcenter.soundcenter.plugin.network.tcp.protocol;
 
 import org.bukkit.entity.Player;
 
-import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class StreamProtocol {
 
 	public static boolean processPacket(byte cmd, TcpPacket receivedPacket, ServerUser user) {
 		
-		//SoundCenter.logger.d("Processing packet in StreamProtocol.", null);//TODO
-		
-		/* client requests a music stream */
-		if (cmd == TcpOpcodes.SV_STREAM_CMD_START) {
-			byte type = (Byte) receivedPacket.getKey();
-			short id = (Short) receivedPacket.getValue();	
-			
-			StreamManager.addUserToSession(type, id, user);					
-			return true;
-				
-		/* client requests to stop a music stream */
-		} else if (cmd == TcpOpcodes.SV_STREAM_CMD_STOP) {
-			byte type = (Byte) receivedPacket.getKey();
-			short id = (Short) receivedPacket.getValue();
-			
-			StreamManager.removeUserFromSession(type, id, user);
-			return true;
+		//SoundCenter.logger.d("Processing packet in StreamProtocol.", null);
 			
 		/* client wants to play a global song */
-		} else if (cmd == TcpOpcodes.SV_STREAM_CMD_PLAY_GLOBAL) {
+		if (cmd == TcpOpcodes.SV_STREAM_CMD_PLAY_GLOBAL) {
 			Player player = user.getPlayer();
 			if (player == null) {
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "Could not get the Bukkit player instance.", null, user);	
@@ -47,14 +29,14 @@ public class StreamProtocol {
 			}
 			
 			Song song = (Song) receivedPacket.getKey();
-			StreamManager.setGlobalSession(song);
+			SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_PLAY_GLOBAL, song, null, null);
 			return true;			
 			
 		/* client wants to stop the global song */
 		} else if (cmd == TcpOpcodes.SV_STREAM_CMD_STOP_GLOBAL) {
 			Player player = user.getPlayer();
 			if (player == null) {
-				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN,"stop global song", null, user);	
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_UNKNOWN, "stop global song", null, user);	
 				return true;
 			}
 			
@@ -63,7 +45,6 @@ public class StreamProtocol {
 				return true;
 			}
 			
-			StreamManager.shutdownSession(GlobalConstants.TYPE_GLOBAL, (short) 1);
 			SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_STOP_GLOBAL, null, null, null);
 			return true;
 		

@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 import com.soundcenter.soundcenter.plugin.network.tcp.ConnectionManager;
 
 public class SCPlayerListener implements Listener{
@@ -34,8 +33,6 @@ public class SCPlayerListener implements Listener{
 	private void onPlayerDisconnect(Player player) {
 		ServerUser user = SoundCenter.userList.getAcceptedUserByName(player.getName());
 		if (user != null) {
-			//remove user from all streams
-			StreamManager.removeUserFromAllSessions(user);
 			//remove user from all voice chat listener lists
 			for (Entry<Short, ServerUser> entry : SoundCenter.userList.acceptedUsers.entrySet()) {
 				ServerUser onlineUser = entry.getValue();

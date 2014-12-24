@@ -29,8 +29,8 @@ import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.messages.Messages;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 import com.soundcenter.soundcenter.plugin.network.tcp.ConnectionManager;
+import com.soundcenter.soundcenter.plugin.network.udp.UdpServer;
 import com.soundcenter.soundcenter.plugin.util.IntersectionDetection;
 
 public class SCCommandExecutor implements CommandExecutor{
@@ -387,7 +387,7 @@ public class SCCommandExecutor implements CommandExecutor{
 							region.getMaximumPoint().getY(), region.getMaximumPoint().getZ(), 
 							player.getWorld().getName(), "null");
 					WGRegion newRegion = new WGRegion(SoundCenter.database.getAvailableId(GlobalConstants.TYPE_WGREGION), player.getName(), args[2], min, max, points);
-					//TODO: intersection detection: for now we only check 
+					//TODO: overlapping stations? for now we only check 
 							//if the center of a newly created box or the corners of a newly created area
 							//are in a worldguard region 
 					SoundCenter.database.addStation(GlobalConstants.TYPE_WGREGION, newRegion);
@@ -489,23 +489,27 @@ public class SCCommandExecutor implements CommandExecutor{
 				
 				if (!user.isSpeaking() && !user.isSpeakingGlobally()) {
 					user.setSpeakingGlobally(true);
-					if (StreamManager.getTotalRate() + (GlobalConstants.VOICE_DATA_RATE
+					if (UdpServer.getTotalDataRate() + (GlobalConstants.VOICE_DATA_RATE
 							*SoundCenter.userList.acceptedUsers.size()*0.8) 
-							<= SoundCenter.config.maxStreamBandwidth()*1024) { //assuming 80% of accepted users are listening to 
+							<= SoundCenter.config.maxBandwidth()*1024) { //assuming 80% of accepted users are listening to 
 																				//global voice chat 
 																				//TODO replace with exact user count
 						SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_START_RECORDING, null, null, user);
-						StreamManager.totalVoiceRate += GlobalConstants.VOICE_DATA_RATE*SoundCenter.userList.acceptedUsers.size()*0.8;
+						UdpServer.totalVoiceDataRate += GlobalConstants.VOICE_DATA_RATE*SoundCenter.userList.acceptedUsers.size()*0.8;
 						player.sendMessage(Messages.INFO_SPEAKING_GLOBALLY);
 					} else {
 						player.sendMessage(Messages.ERR_SERVER_LOAD);
 						user.setSpeaking(false);
 					}
 				} else {
+					if (user.isSpeakingGlobally()) {
+						UdpServer.totalVoiceDataRate -= GlobalConstants.VOICE_DATA_RATE*SoundCenter.userList.acceptedUsers.size()*0.8;
+					} else {
+						UdpServer.totalVoiceDataRate -= GlobalConstants.VOICE_DATA_RATE*user.listeners.size();
+					}
 					user.setSpeaking(false);
 					user.setSpeakingGlobally(false);
 					SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_STOP_RECORDING, null, null, user);
-					StreamManager.totalVoiceRate -= GlobalConstants.VOICE_DATA_RATE;
 					player.sendMessage(Messages.INFO_NOT_SPEAKING);
 				}
 				return true;
@@ -516,8 +520,8 @@ public class SCCommandExecutor implements CommandExecutor{
 				if (!user.isSpeaking() && !user.isSpeakingGlobally()) {
 					user.setSpeaking(true);
 					//check server load
-					if (StreamManager.getTotalRate() + GlobalConstants.VOICE_DATA_RATE*user.listeners.size() <= SoundCenter.config.maxStreamBandwidth()*1024) {
-						StreamManager.totalVoiceRate += GlobalConstants.VOICE_DATA_RATE*user.listeners.size();
+					if (UdpServer.getTotalDataRate() + GlobalConstants.VOICE_DATA_RATE*user.listeners.size() <= SoundCenter.config.maxBandwidth()*1024) {
+						UdpServer.totalVoiceDataRate += GlobalConstants.VOICE_DATA_RATE*user.listeners.size();
 						SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_START_RECORDING, null, null, user);
 						player.sendMessage(Messages.INFO_SPEAKING);
 					} else {
@@ -525,10 +529,14 @@ public class SCCommandExecutor implements CommandExecutor{
 						user.setSpeaking(false);
 					}
 				} else {
+					if (user.isSpeakingGlobally()) {
+						UdpServer.totalVoiceDataRate -= GlobalConstants.VOICE_DATA_RATE*SoundCenter.userList.acceptedUsers.size()*0.8;
+					} else {
+						UdpServer.totalVoiceDataRate -= GlobalConstants.VOICE_DATA_RATE*user.listeners.size();
+					}
 					user.setSpeaking(false);
 					user.setSpeakingGlobally(false);
 					SoundCenter.tcpServer.send(TcpOpcodes.CL_CMD_STOP_RECORDING, null, null, user);
-					StreamManager.totalVoiceRate -= GlobalConstants.VOICE_DATA_RATE;
 					player.sendMessage(Messages.INFO_NOT_SPEAKING);
 				}
 				return true;

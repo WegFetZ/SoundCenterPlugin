@@ -13,10 +13,11 @@ import com.soundcenter.soundcenter.lib.udp.UdpOpcodes;
 import com.soundcenter.soundcenter.lib.udp.UdpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 
 public class UdpServer implements Runnable {
 
+	public static long totalVoiceDataRate = 0;
+	
 	public boolean exit = false;
 	public boolean active = false;
 	public DatagramSocket datagramSocket = null;
@@ -36,7 +37,7 @@ public class UdpServer implements Runnable {
 			if (!serverIp.isEmpty()) {
 				InetAddress addr = InetAddress.getByName(serverIp);
 				datagramSocket = new DatagramSocket(udpPort, addr);
-				addrLogString = addr.getHostAddress() + ": ";
+				addrLogString = addr.getHostAddress() + ":";
 			} else {
 				datagramSocket = new DatagramSocket(udpPort);
 				addrLogString ="port: ";
@@ -111,10 +112,14 @@ public class UdpServer implements Runnable {
 		udpSender.send(packet, receptors);
 	}
 	
+	public static long getTotalDataRate() {
+		return totalVoiceDataRate + (SoundCenter.userList.getInitializedUserCount() 
+				* GlobalConstants.LOCATION_DATA_RATE);
+	}
+	
 	public void shutdown() {
 		SoundCenter.logger.i("Shutting down UDP-Server...", null);
-		exit = true;		
-		StreamManager.shutdownAll();
+		exit = true;
 		udpSender.shutdown();
 		datagramSocket.close();
 	}

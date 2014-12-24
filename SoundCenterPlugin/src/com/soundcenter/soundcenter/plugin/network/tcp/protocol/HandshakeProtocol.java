@@ -6,32 +6,36 @@ import java.util.TimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
 import com.soundcenter.soundcenter.lib.tcp.TcpPacket;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.network.tcp.ConnectionManager;
+import com.soundcenter.soundcenter.plugin.network.udp.UdpServer;
 
 public class HandshakeProtocol {
 
 	public static boolean processPacket(byte cmd, TcpPacket receivedPacket, ServerUser user) {
 		
-		//SoundCenter.logger.d("Processing packet in HandshakeProtocol.", null);//TODO
+		//SoundCenter.logger.d("Processing packet in HandshakeProtocol.", null);
 		
 		if (cmd == TcpOpcodes.SV_CON_REQ_JOIN) {		/* join request */
-			if (SoundCenter.userList.serverUserCount() < SoundCenter.config.serverCapacity()) {	
-				
-				/* request client version info */
-				SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_REQ_VERSION, null, null, user);
-				user.setJoinRequested(true);
-				
-				return true;
-				
-			} else {		/* server full */
+			if (SoundCenter.userList.serverUserCount() >= SoundCenter.config.serverCapacity()) {	/* server full */
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_DENY_USER_CAP, null, null, user);
 				user.setQuitReason("Server reached its full capacity.");
 				return false;
 			}
+			if (UdpServer.getTotalDataRate() + GlobalConstants.LOCATION_DATA_RATE > SoundCenter.config.maxBandwidth()*1024) {   /* server reached bandwidth limit */
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_DENY_USER_CAP, null, null, user);
+				user.setQuitReason("Server has reached its bandwidth limit.");
+				return false;
+			}
+			/* request client version info */
+			SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_REQ_VERSION, null, null, user);
+			user.setJoinRequested(true);
+			
+			return true;
 			
 		} else if (!user.hasJoinRequested()) {		/* protocol error */
 			SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_DENY_PROTOCOL, null, null, user);

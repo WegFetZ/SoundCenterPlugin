@@ -22,10 +22,9 @@ public class Configuration {
 	private int maxAreaSize;
 	private int maxBoxes;
 	private int maxAreas;
-	private int maxStorage;
 	private int voiceRange;
 	private int voiceRemindTime;
-	private int maxStreamBandwidth;
+	private int maxBandwidth;
 	
 	public Configuration(JavaPlugin plugin) {
 		this.plugin = plugin;
@@ -52,7 +51,6 @@ public class Configuration {
             	put("Max-Area-Edge-Length", 150);
             	put("Max-Boxes-Per-User", 5);
             	put("Max-Areas-Per-User", 3);
-            	put("Max-Used-Storage-Per-User-Mb", 40);
             	put("Remind-Of-Voice-Chat-Time", 60);
             	put("Limit-Streaming-Bandwidth-Kb/s", 2048);
             }
@@ -71,9 +69,8 @@ public class Configuration {
 		maxAreaSize = cfg.getInt("Max-Area-Edge-Length");
 		maxBoxes = cfg.getInt("Max-Boxes-Per-User");
 		maxAreas = cfg.getInt("Max-Areas-Per-User");
-		maxStorage = cfg.getInt("Max-Used-Storage-Per-User-Mb");
 		voiceRemindTime = cfg.getInt("Remind-Of-Voice-Chat-Time");
-		maxStreamBandwidth = cfg.getInt("Limit-Streaming-Bandwidth-Kb/s");
+		maxBandwidth = cfg.getInt("Limit-Streaming-Bandwidth-Kb/s");
 		
         plugin.saveConfig();
 	}
@@ -91,7 +88,6 @@ public class Configuration {
 	public int maxAreaSize() { return maxAreaSize; }
 	public int maxBoxes() { return maxBoxes; }
 	public int maxAreas() { return maxAreas; }
-	public int maxStorage() { return maxStorage; }
 	public int voiceRemindTime() { return voiceRemindTime; }
-	public int maxStreamBandwidth() { return maxStreamBandwidth; }
+	public int maxBandwidth() { return maxBandwidth; }
 }

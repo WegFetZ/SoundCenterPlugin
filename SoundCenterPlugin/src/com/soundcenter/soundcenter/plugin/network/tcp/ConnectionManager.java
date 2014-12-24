@@ -18,6 +18,7 @@ public class ConnectionManager {
 					&& (tcpUser.getIp().equals(player.getAddress().getAddress()) || !SoundCenter.config.verifyIp())) {
 
 				tcpUser.setInitialized(true);
+				SoundCenter.userList.incrementInitializedUserCount();
 
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_CON_INFO_INITIALIZED, null, null, tcpUser);
 				player.sendMessage(Messages.INFO_INIT_SUCCESS);

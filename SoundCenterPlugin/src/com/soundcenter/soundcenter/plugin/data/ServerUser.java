@@ -1,6 +1,5 @@
 package com.soundcenter.soundcenter.plugin.data;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -35,15 +34,13 @@ public class ServerUser {
 	private boolean initialized = false;
 	private String quitReason = "Unknown.";
 	
-	private UserUploadManager uploadManager = null;
-	
 	/* udp */
 	private int udpPort = 0;
 	private short sequenceNr = Short.MIN_VALUE;
 	
 	/* misc */
 	private short id = 0;
-	private boolean musicActive = true;//TODO: do i really need this?
+	private boolean musicActive = true;
 	private boolean voiceActive = true;
 	private boolean speaking = false;
 	private boolean speakingGlobally = false;
@@ -111,35 +108,9 @@ public class ServerUser {
 		try { Thread.sleep(100); } catch(InterruptedException e ){}
 		
 		this.disconnect = true; 
-		if (uploadManager != null) {
-			uploadManager.shutdown();
-		}
 		try {
 			socket.close();
 		} catch (IOException e) {}
-	}
-	
-	public void receiveSongChunk(byte[] chunk) {
-		if (uploadManager != null && uploadManager.isActive()) {
-			uploadManager.feed(chunk);
-		}
-	}
-	
-	public void receiveSong(File partFile, File file, long size) {
-		if (uploadManager == null || !uploadManager.isActive()) {
-			uploadManager = new UserUploadManager(partFile, file, size, this);
-			new Thread(uploadManager).start();
-		}
-	}
-	
-	public void uploadEnded() {
-		if (uploadManager != null) {
-			uploadManager.uploadEnded();
-		}
-	}
-	
-	public boolean isUploadActive() {
-		return (uploadManager != null && uploadManager.isActive());
 	}
 	
 	/*########################## UDP #######################*/

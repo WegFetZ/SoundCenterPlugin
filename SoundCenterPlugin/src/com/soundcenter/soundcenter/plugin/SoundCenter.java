@@ -2,14 +2,17 @@ package com.soundcenter.soundcenter.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.io.Files;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -22,15 +25,14 @@ import com.soundcenter.soundcenter.lib.util.FileOperation;
 import com.soundcenter.soundcenter.plugin.commands.SCCommandExecutor;
 import com.soundcenter.soundcenter.plugin.data.Database;
 import com.soundcenter.soundcenter.plugin.data.UserList;
-import com.soundcenter.soundcenter.plugin.network.StreamManager;
 import com.soundcenter.soundcenter.plugin.network.tcp.TcpServer;
 import com.soundcenter.soundcenter.plugin.network.udp.UdpServer;
 import com.soundcenter.soundcenter.plugin.util.SCLogger;
 
 public class SoundCenter extends JavaPlugin {
 
-	public static final double MIN_CL_VERSION = 0.200;
-	public static final double MAX_CL_VERSION = 0.299;
+	public static final double MIN_CL_VERSION = 0.300;
+	public static final double MAX_CL_VERSION = 0.399;
 
 	public static String musicDataFolder = "";
 	public static Configuration config = null;
@@ -110,9 +112,13 @@ public class SoundCenter extends JavaPlugin {
 								+ database.getStationCount(GlobalConstants.TYPE_BIOME) + " biome settings, "
 								+ database.getStationCount(GlobalConstants.TYPE_WORLD) + " world settings and " 
 								+ database.getStationCount(GlobalConstants.TYPE_WGREGION) + ".", null);				
-			} catch (IOException e) {
-				logger.w("Error while loading data.", e);
-			} catch (ClassNotFoundException e) {
+			} catch (InvalidClassException e) {
+				database = new Database();
+				logger.w("Found Database of incompatible SoundCenter Version. Old Database will be backed up to data.old.scdb", null);
+				try {
+					Files.move(dataFile, new File("plugins" + File.separator + "SoundCenter" + File.separator + "data.old.scdb"));
+				} catch(Exception e2){}
+			} catch (Exception e) {
 				logger.w("Error while loading data.", e);
 			}
 		} else
@@ -128,7 +134,6 @@ public class SoundCenter extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		StreamManager.shutdownAll();
 		tcpServer.shutdown();
 		udpServer.shutdown();
 		mainLoop.shutdown();
