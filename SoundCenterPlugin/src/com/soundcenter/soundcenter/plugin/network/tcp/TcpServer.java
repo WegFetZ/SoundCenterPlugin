@@ -20,34 +20,27 @@ public class TcpServer implements Runnable {
 	private TcpSender tcpSender = null;
 	private Thread tcpSenderThread = null;
 	private int tcpPort = 0;
-	private String serverIp = "";
+	private String serverBindAddr = "";
 	
 	public TcpServer(int port, String serverIp) {
 		this.tcpPort = port;
-		this.serverIp = serverIp;
+		this.serverBindAddr = serverIp;
 	}
 	
 	@Override
 	public void run() {
 		active = true;
 		try {
-			String addrLogString = "";
-			if (!serverIp.isEmpty()) {
-				InetAddress addr = InetAddress.getByName(serverIp);
-				serverSocket = new ServerSocket(tcpPort, 50, addr);
-				addrLogString = addr.getHostAddress() + ":";
-			} else {
-				serverSocket = new ServerSocket(tcpPort);
-				addrLogString ="port: ";
-			}
+			InetAddress addr = InetAddress.getByName(serverBindAddr);
+			serverSocket = new ServerSocket(tcpPort, 50, addr);
 			
 			tcpSender = new TcpSender();
 			tcpSenderThread = new Thread(tcpSender);
 			tcpSenderThread.start();
 			
-			SoundCenter.logger.i("TCP-Server started on " + addrLogString + tcpPort + ".", null);
+			SoundCenter.logger.i("TCP-Server started on " + addr.getHostAddress() + ":" + tcpPort + ".", null);
 		} catch (UnknownHostException e) {
-			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverIp, e);
+			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverBindAddr, e);
 			exit = true;
 		} catch (IOException e) {
 			SoundCenter.logger.s("Error while starting TCP-Server on port " + tcpPort, e);

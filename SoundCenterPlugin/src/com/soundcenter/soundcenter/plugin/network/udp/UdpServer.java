@@ -23,35 +23,27 @@ public class UdpServer implements Runnable {
 	public DatagramSocket datagramSocket = null;
 	private UdpSender udpSender = null;
 	private int udpPort = 4224;
-	private String serverIp = "";
+	private String serverBindAddr = "0.0.0.0";
 	
-	public UdpServer(int port, String serverIp) {
+	public UdpServer(int port, String serverBindAddr) {
 		this.udpPort = port;
-		this.serverIp = serverIp;
+		this.serverBindAddr = serverBindAddr;
 	}
 	
 	public void run() {
 		active = true;
 		try {
-			String addrLogString = "";
-			if (!serverIp.isEmpty()) {
-				InetAddress addr = InetAddress.getByName(serverIp);
-				datagramSocket = new DatagramSocket(udpPort, addr);
-				addrLogString = addr.getHostAddress() + ":";
-			} else {
-				datagramSocket = new DatagramSocket(udpPort);
-				addrLogString ="port: ";
-			}
-			
+			InetAddress addr = InetAddress.getByName(serverBindAddr);
+			datagramSocket = new DatagramSocket(udpPort, addr);	
 			
 			udpSender = new UdpSender(datagramSocket);
 			
-			SoundCenter.logger.i("UDP-Server started on " + addrLogString + udpPort + ".", null);
+			SoundCenter.logger.i("UDP-Server started on " + addr.getHostAddress() + ":" + udpPort + ".", null);
 		} catch (SocketException e) {
 			SoundCenter.logger.s("Error while starting UDP-Server on port" + udpPort, e);
 			exit = true;
 		} catch (UnknownHostException e) {
-			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverIp, e);
+			SoundCenter.logger.s("Error while trying to resolve server-ip: " + serverBindAddr, e);
 			exit = true;
 		}
 		
