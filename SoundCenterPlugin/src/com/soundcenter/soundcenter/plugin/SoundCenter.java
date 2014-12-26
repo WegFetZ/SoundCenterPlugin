@@ -43,7 +43,6 @@ public class SoundCenter extends JavaPlugin {
 	public static SCLogger logger = null;
 
 	public static File dataFile = new File("plugins" + File.separator + "SoundCenter" + File.separator + "data.scdb");
-	private int saveDataTaskId = 0;
 
 	private MainLoop mainLoop = new MainLoop();
 	
@@ -111,7 +110,7 @@ public class SoundCenter extends JavaPlugin {
 						"Database loaded: " + database.areas.size() + " areas, " + database.boxes.size() + " boxes, "
 								+ database.getStationCount(GlobalConstants.TYPE_BIOME) + " biome settings, "
 								+ database.getStationCount(GlobalConstants.TYPE_WORLD) + " world settings and " 
-								+ database.getStationCount(GlobalConstants.TYPE_WGREGION) + ".", null);				
+								+ database.getStationCount(GlobalConstants.TYPE_WGREGION) + " WorldGuard regions.", null);				
 			} catch (InvalidClassException e) {
 				database = new Database();
 				logger.w("Found Database of incompatible SoundCenter Version. Old Database will be backed up to data.old.scdb", null);
@@ -137,15 +136,12 @@ public class SoundCenter extends JavaPlugin {
 		tcpServer.shutdown();
 		udpServer.shutdown();
 		mainLoop.shutdown();
-		
-		//stop saving the database
-		this.getServer().getScheduler().cancelTask(saveDataTaskId);
 
 		try {
 			FileOperation.saveObject(dataFile, database);
 			SoundCenter.logger.i("Database saved: " + database.areas.size() + " areas, " + database.boxes.size()
 					+ " boxes, " + database.biomes.size() + " biome settings and " + database.worlds.size()
-					+ " world settings.", null);
+					+ " world settings + " + database.wgRegions.size() + " WorldGuard regions.", null);
 		} catch (IOException e) {
 			SoundCenter.logger.w("Error while saving data.", e);
 		}
