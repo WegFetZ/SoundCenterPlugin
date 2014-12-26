@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,9 +25,11 @@ import com.soundcenter.soundcenter.lib.data.Box;
 import com.soundcenter.soundcenter.lib.data.SCLocation;
 import com.soundcenter.soundcenter.lib.data.GlobalConstants;
 import com.soundcenter.soundcenter.lib.data.SCLocation2D;
+import com.soundcenter.soundcenter.lib.data.Song;
 import com.soundcenter.soundcenter.lib.data.Station;
 import com.soundcenter.soundcenter.lib.data.WGRegion;
 import com.soundcenter.soundcenter.lib.tcp.TcpOpcodes;
+import com.soundcenter.soundcenter.plugin.PlaybackManager;
 import com.soundcenter.soundcenter.plugin.SoundCenter;
 import com.soundcenter.soundcenter.plugin.data.ServerUser;
 import com.soundcenter.soundcenter.plugin.messages.Messages;
@@ -248,6 +252,133 @@ public class SCCommandExecutor implements CommandExecutor{
 					player.sendMessage(Messages.prefix + "You are in world: ");
 				}
 			}
+			return true;
+			
+		/* sc play <songtitle> [global | world <name>] */
+		} else if (args[0].equalsIgnoreCase("play")) {
+			if (args.length >= 2) {
+				String title = "";
+				int nextParamIndex = 2;
+				if (args[1].startsWith("\"")) {
+					title = args[1].substring(1);
+					for (int i = 2; i<args.length; i++) {
+						if (args[i].endsWith("")) {
+							title = args[i].substring(0, args[i].length()-2);
+							nextParamIndex = i++;
+							break;
+						} else {
+							title += args[i];
+						}
+					}
+				} else {
+					title = args[1];
+				}
+				Song song = SoundCenter.database.getSong(title);
+				if (song == null) {
+					player.sendMessage(Messages.ERR_SONG_NOT_EXISTANT);
+					return true;
+				}
+			
+				if (args.length < nextParamIndex+1) {
+					PlaybackManager.playSong(song, SoundCenter.userList.getAcceptedUserByName(player.getName()));
+					player.sendMessage(Messages.INFO_PLAYING_SONG + song.getTitle());				
+					return true;
+				
+				} else {
+					if (args[nextParamIndex].equalsIgnoreCase("global")) {
+						if (!player.hasPermission("sc.play.global")) {
+							player.sendMessage(Messages.ERR_PERMISSION_PLAY_GLOBAL);
+							return true;
+						}
+						PlaybackManager.playGlobalSong(song);
+						player.sendMessage(Messages.INFO_PLAYING_SONG + song.getTitle() + Messages.INFO_PLAYING_SONG_GLOBAL);
+						return true;
+						
+					} else if(args[nextParamIndex].equalsIgnoreCase("world")) {
+						if (!player.hasPermission("sc.play.world")) {
+							player.sendMessage(Messages.ERR_PERMISSION_PLAY_WORLD);
+							return true;
+						}
+						if (args.length >= nextParamIndex+2) {
+							String worldName = args[nextParamIndex+1];
+							World world = Bukkit.getServer().getWorld(worldName);
+							if (world == null) {
+								player.sendMessage(Messages.ERR_WORLD_NOT_EXISTANT);
+								return true;
+							}
+							PlaybackManager.playWorldSong(song, world);
+							player.sendMessage(Messages.INFO_PLAYING_SONG + song.getTitle() + Messages.INFO_PLAYING_SONG_WORLD + world.getName());
+							return true;
+						}
+					}
+				}
+			}
+			
+			player.sendMessage(Messages.CMD_USAGE_PLAY);
+			return true;
+			
+		/* sc stop <songtitle> [global|world <name>]*/	
+		} else if (args[0].equalsIgnoreCase("stop")) {
+			if (args.length >= 2) {
+				String title = "";
+				int nextParamIndex = 2;
+				if (args[1].startsWith("\"")) {
+					title = args[1].substring(1);
+					for (int i = 2; i<args.length; i++) {
+						if (args[i].endsWith("")) {
+							title = args[i].substring(0, args[i].length()-2);
+							nextParamIndex = i++;
+							break;
+						} else {
+							title += args[i];
+						}
+					}
+				} else {
+					title = args[1];
+				}
+				Song song = SoundCenter.database.getSong(title);
+				if (song == null) {
+					player.sendMessage(Messages.ERR_SONG_NOT_EXISTANT);
+					return true;
+				}
+			
+				if (args.length < nextParamIndex+1) {
+					PlaybackManager.stopSong(song, SoundCenter.userList.getAcceptedUserByName(player.getName()));
+					player.sendMessage(Messages.INFO_STOPPED_SONG + song.getTitle());
+					return true;
+				
+				} else {
+					if (args[nextParamIndex].equalsIgnoreCase("global")) {
+						if (!player.hasPermission("sc.play.global")) {
+							player.sendMessage(Messages.ERR_PERMISSION_PLAY_GLOBAL);
+							return true;
+						}
+						
+						PlaybackManager.stopGlobalSong(song);
+						player.sendMessage(Messages.INFO_STOPPED_SONG + song.getTitle() + Messages.INFO_PLAYING_SONG_GLOBAL);
+						return true;
+						
+					} else if(args[nextParamIndex].equalsIgnoreCase("world")) {
+						if (!player.hasPermission("sc.play.world")) {
+							player.sendMessage(Messages.ERR_PERMISSION_PLAY_WORLD);
+							return true;
+						}
+						if (args.length >= nextParamIndex+2) {
+							String worldName = args[nextParamIndex+1];
+							World world = Bukkit.getServer().getWorld(worldName);
+							if (world == null) {
+								player.sendMessage(Messages.ERR_WORLD_NOT_EXISTANT);
+								return true;
+							}
+							PlaybackManager.stopWorldSong(song, world);
+							player.sendMessage(Messages.INFO_STOPPED_SONG + song.getTitle() + Messages.INFO_PLAYING_SONG_WORLD + world.getName());
+							return true;
+						}
+					}
+				}
+			}
+			
+			player.sendMessage(Messages.CMD_USAGE_STOP);
 			return true;
 		
 		/* sc set */

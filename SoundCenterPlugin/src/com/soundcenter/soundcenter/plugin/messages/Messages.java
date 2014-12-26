@@ -35,6 +35,10 @@ public class Messages {
 	public static final String INFO_STILL_SPEAKING = prefix + "Your voice chat is still enabled! You can turn it off by using " 
 													+ GREEN + "/sc speak " + WHITE + "again";
 	public static final String INFO_NOT_SPEAKING = prefix + GREEN + "Voice chat disabled!";
+	public static final String INFO_PLAYING_SONG = prefix + GREEN + "Playing song: ";
+	public static final String INFO_STOPPED_SONG = prefix + GREEN + "Stopped song: ";
+	public static final String INFO_PLAYING_SONG_WORLD = " in world: ";
+	public static final String INFO_PLAYING_SONG_GLOBAL = " for everyone on the server.";
 	
 	public static final String INFO_HELP = prefix + "Available commands: ( < > = required [ ] = optional )\n"
 											+ "- /sc init\n"
@@ -44,6 +48,8 @@ public class Messages {
 											+ "- /sc mute <name>\n"
 											+ "- /sc unmute <name>\n"
 											+ "- /sc volume <1-100>\n"
+											+ "- /sc play <songtitle> [world <name>|global]"
+											+ "- /sc stop <songtitle> [world <name>|global]"
 											+ "- /sc set <box> [range]\n"
 											+ "- /sc set corner <1|2>\n"
 											+ "- /sc set area\n"
@@ -61,7 +67,10 @@ public class Messages {
 														+ WHITE + ".";
 	public static final String CMD_USAGE_SET_CORNERS = prefix + "Use " + GREEN + "/sc set corner <1|2>" 
 														+ WHITE + ".";
-	
+	public static final String CMD_USAGE_PLAY = prefix + "Use " + GREEN + "/sc play <songtitle> [world <name>|global]" 
+													+ WHITE + ".";
+	public static final String CMD_USAGE_STOP = prefix + "Use " + GREEN + "/sc stop <songtitle> [world <name>|global]" 
+			+ WHITE + ".";
 	
 	public static final String ERR_CONNECTION_LOST = prefix + RED + "Connection to AudioClient lost!";
 	public static final String ERR_SERVER_LOAD = prefix + RED + "The audio-server is currently streaming at its maximum bandwidth, " 
@@ -83,10 +92,17 @@ public class Messages {
 														+ "have permission to use voice chat.";
 	public static final String ERR_PERMISSION_SPEAK_GLOBAL = prefix + RED + "Unfortunately you don't " 
 														+ "have permission to use global voice chat.";
+	public static final String ERR_PERMISSION_PLAY_WORLD = prefix + RED + "Unfortunately you don't " 
+			+ "have permission to play/stop songs worldwide.";
+	public static final String ERR_PERMISSION_PLAY_GLOBAL = prefix + RED + "Unfortunately you don't " 
+			+ "have permission to play/stop songs globally.";
 	public static final String ERR_LOAD_WORLDGUARD = prefix + RED + "Cannot load the WorldGuard plugin.";
-	public static final String ERR_WGREGION_ALREADY_EXISTANT = prefix + RED + "This region is already a SoundCenter station.";
-	public static final String ERR_WGREGION_NOT_EXISTANT = prefix + RED + "A WorldGuard region with this id doesn't exist.";
 	public static final String ERR_VOICE_CHAT_DISABLED = prefix + RED + "Voice chat is disabled on this server.";
+	
+	public static final String ERR_WGREGION_ALREADY_EXISTANT = prefix + RED + "This region is already a SoundCenter station.";
+	public static final String ERR_WGREGION_NOT_EXISTANT = prefix + RED + "A WorldGuard region with this id doesn't exist.";	
+	public static final String ERR_SONG_NOT_EXISTANT = prefix + RED + "A song with this title doesn't exist.";
+	public static final String ERR_WORLD_NOT_EXISTANT = prefix + RED + "A world with this name doesn't exist.";
 	
 	public static final String ERR_MUTE_PT1 = prefix + RED + "Cannot (un)mute ";
 	public static final String ERR_MUTE_PT2 = " because he is not using the audio-client.";
