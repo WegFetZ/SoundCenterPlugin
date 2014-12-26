@@ -23,8 +23,8 @@ public class MainProtocol {
 			
 		} else {		/* user is already accepted and initialized */
 			
-			if (isInGroup(cmd, TcpOpcodes.SV_GROUP_STREAM, TcpOpcodes.SV_GROUP_END_STREAM)) {
-				return StreamProtocol.processPacket(cmd, receivedPacket, user);
+			if (isInGroup(cmd, TcpOpcodes.SV_GROUP_CMD, TcpOpcodes.SV_GROUP_END_CMD)) {
+				return CMDProtocol.processPacket(cmd, receivedPacket, user);
 						
 			} else if (isInGroup(cmd, TcpOpcodes.SV_GROUP_DATA, TcpOpcodes.SV_GROUP_END_DATA)) {
 				return DataProtocol.processPacket(cmd, receivedPacket, user);

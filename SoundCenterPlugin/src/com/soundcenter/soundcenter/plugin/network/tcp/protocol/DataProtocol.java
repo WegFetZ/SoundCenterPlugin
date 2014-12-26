@@ -165,13 +165,19 @@ public class DataProtocol {
 
 			Song song = (Song) receivedPacket.getKey();
 
-			if (player.hasPermission("sc.add.song")) {
-				song.setOwner(player.getName());
-				SoundCenter.database.addSong(song);
-				SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, null);
-			} else {
+			if (!player.hasPermission("sc.add.song")) {	
 				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_CREATE_PERMISSION, "sc.add.song", null, user);
+				return true;
 			}
+			
+			if (SoundCenter.database.getSong(song.getTitle()) != null) {
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_ERR_ALREADY_EXISTS, "Song", null, user);
+				return true;
+			}
+			
+			song.setOwner(player.getName());
+			SoundCenter.database.addSong(song);
+			SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, null);
 		
 			return true;
 
@@ -255,13 +261,9 @@ public class DataProtocol {
 			}
 
 			// send list of songs
-			// do not send songs of others if user has no persmission to use
-			// them
 			for (Entry<String, Song> entry : SoundCenter.database.songs.entrySet()) {
 				Song song = entry.getValue();
-				if (song.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission("sc.others.use.songs")) {
-					SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, user);
-				}
+				SoundCenter.tcpServer.send(TcpOpcodes.CL_DATA_SONG, song, null, user);
 			}
 			
 			// send list of permissions
