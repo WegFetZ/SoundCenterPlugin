@@ -13,6 +13,7 @@ public class Configuration {
 	private boolean debug;
 	private boolean verifyIp;
 	private boolean voiceEnabled;
+	private String serverBindAddr;
 	private String serverIp;
 	private int port;
 	private int serverCapacity;
@@ -31,6 +32,7 @@ public class Configuration {
 		load();
 	}	
 	
+	@SuppressWarnings("serial")
 	public void load() {
         plugin.reloadConfig();
 
@@ -39,6 +41,7 @@ public class Configuration {
         cfg.addDefaults(new HashMap<String,Object>(){
 			{
             	put("Debug-Mode", false);
+            	put("SC-Server-Bind-Address", "0.0.0.0");
             	put("Server-IP", "");
             	put("Port", 4224);
             	put("Max-Users", 50);
@@ -59,6 +62,7 @@ public class Configuration {
         debug = cfg.getBoolean("Debug-Mode");
         verifyIp = cfg.getBoolean("Verify-By-IP-Address");
         voiceEnabled = cfg.getBoolean("Enable-Voice-Chat");
+        serverBindAddr = cfg.getString("SC-Server-Bind-Address");
         serverIp = cfg.getString("Server-IP");
 		port = cfg.getInt("Port");
 		serverCapacity = cfg.getInt("Max-Users");
@@ -78,6 +82,7 @@ public class Configuration {
 	public boolean debug() { return debug; }
 	public boolean verifyIp() { return verifyIp; }
 	public boolean voiceEnabled() { return voiceEnabled; }
+	public String serverBindAddr() { return serverBindAddr; }
 	public String serverIp() { return serverIp; }
 	public int port() { return port; }
 	public int serverCapacity() { return serverCapacity; }
