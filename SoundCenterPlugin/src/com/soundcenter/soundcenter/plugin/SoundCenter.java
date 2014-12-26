@@ -125,8 +125,8 @@ public class SoundCenter extends JavaPlugin {
 			database = new Database();		
 
 		// start server
-		tcpServer = new TcpServer(config.port(), config.serverIp());
-		udpServer = new UdpServer(config.port(), config.serverIp());
+		tcpServer = new TcpServer(config.port(), config.serverBindAddr());
+		udpServer = new UdpServer(config.port(), config.serverBindAddr());
 		new Thread(tcpServer).start();
 		new Thread(udpServer).start();
 		new Thread(mainLoop).start();
