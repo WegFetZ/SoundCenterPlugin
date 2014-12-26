@@ -1,7 +1,6 @@
 package com.soundcenter.soundcenter.plugin.data;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -123,15 +122,19 @@ public class Database implements Serializable {
 		} else
 			return 0;
 	}
+	
+	public Song getSong(String title) {
+		return songs.get(title);
+	}
 
 	public void addSong(Song song) {
-		songs.put(song.toString(), song);
+		songs.put(song.getTitle(), song);
 		saveToDisk();
 	}
 	
 	public void removeSong(Song song) {
 		
-		songs.remove(song.toString());
+		songs.remove(song.getTitle());
 		
 		for (Entry<Short, Station> entry : areas.entrySet()) {
 			entry.getValue().removeSong(song);
@@ -215,21 +218,5 @@ public class Database implements Serializable {
 		} catch (IOException e) {
 			SoundCenter.logger.w("Error while saving data.", e);
 		}
-	}
-	
-	/* we need to set default values for new variables, which aren't defined in the serialized object */
-	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-	    int classVersion = DATABASE_VERSION;
-	    
-		ois.defaultReadObject();
-		if (classVersion > DATABASE_VERSION) {
-			
-		}
-	    if (wgRegions == null) {
-	    	wgRegions = new ConcurrentHashMap<Short, Station>();
-	    }
-	    if (songs == null) {
-	    	songs = new ConcurrentHashMap<String, Song>();
-	    }
 	}
 }
