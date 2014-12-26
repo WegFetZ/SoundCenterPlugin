@@ -18,7 +18,6 @@ public class MainLoop implements Runnable {
 	public void run() {
 		thread = Thread.currentThread();
 		thread.setName("PositionsUpdater");
-
 		
 		long timeA;
 		long timeB;
