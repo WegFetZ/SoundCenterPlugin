@@ -40,21 +40,15 @@ public class Messages {
 	public static final String INFO_PLAYING_SONG_WORLD = " in world: ";
 	public static final String INFO_PLAYING_SONG_GLOBAL = " for everyone on the server.";
 	
-	public static final String INFO_HELP = prefix + "Available commands: ( < > = required [ ] = optional )\n"
-											+ "- /sc init\n"
-											+ "- /sc status\n"
-											+ "- /sc users\n"
-											+ "- /sc toggle <music|voice>\n"
-											+ "- /sc mute <name>\n"
-											+ "- /sc unmute <name>\n"
-											+ "- /sc volume <1-100>\n"
-											+ "- /sc play <songtitle> [world <name>|global]"
-											+ "- /sc stop <songtitle> [world <name>|global]"
-											+ "- /sc set <box> [range]\n"
-											+ "- /sc set corner <1|2>\n"
-											+ "- /sc set area\n"
-											+ "- /sc set wgregion <name>\n"
-											+ "- /sc speak [global]\n";
+	public static final String INFO_HELP_TITLE = prefix + "Available commands: ( < > = required [ ] = optional )";
+	public static final String INFO_HELP_PAGE_PT1 = "Use " + ChatColor.GREEN + " /sc help ";
+	public static final String INFO_HELP_PAGE_PT2 =  ChatColor.WHITE + " to show more commands.";
+	public static final String[] INFO_HELP_COMMANDS = new String[]{"- /sc init","- /sc status", "- /sc users",
+											"- /sc toggle <music|voice>", "- /sc mute <name>", "- /sc unmute <name>",
+											"- /sc volume <1-100>",	"- /sc play <songtitle> [world <name>|global]",
+											"- /sc stop <songtitle> [world <name>|global]", "- /sc set <box> [range]",
+											"- /sc set corner <1|2>", "- /sc set area", "- /sc set wgregion <name>",
+											"- /sc speak [global]"};
 	
 	public static final String CMD_USAGE_SC = prefix + "Use " + GREEN + "/sc help " + WHITE + "to get a list of all commands.";
 	public static final String CMD_USAGE_MUTE = prefix + "Use " + GREEN + "/sc mute <name> " + WHITE + ".";

@@ -5,7 +5,7 @@ commands:
   sc:
     aliases: soundcenter
     description: Prefix for all SoundCenter commands.
-    usage: /sc help
+    usage: /sc help [page]
 permissions:
   sc.*:
     description: Gives access to all SoundCenter commands

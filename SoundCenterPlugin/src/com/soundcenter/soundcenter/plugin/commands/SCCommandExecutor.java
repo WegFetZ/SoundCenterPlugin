@@ -55,7 +55,19 @@ public class SCCommandExecutor implements CommandExecutor{
 		
 		/* sc help */
 		if (args[0].equalsIgnoreCase("help")) {
-			sender.sendMessage(Messages.INFO_HELP);
+			int page = 1;
+			if (args.length >= 2) {
+				try { page = Integer.valueOf(args[1]); } catch(Exception e) {}
+			}
+			sender.sendMessage(Messages.INFO_HELP_TITLE);
+			for (int i = (page-1)*7; i<(page-1)*7+7; i++) {
+				if (i >= Messages.INFO_HELP_COMMANDS.length) {
+					break;
+				} else {
+					sender.sendMessage(Messages.INFO_HELP_COMMANDS[i]);
+				}
+			}
+			sender.sendMessage(Messages.INFO_HELP_PAGE_PT1 + (page+1) + Messages.INFO_HELP_PAGE_PT2);
 			return true;
 		}
 		
