@@ -33,8 +33,7 @@ public class SoundCenter extends JavaPlugin {
 
 	public static final double MIN_CL_VERSION = 0.300;
 	public static final double MAX_CL_VERSION = 0.399;
-
-	public static String musicDataFolder = "";
+	
 	public static Configuration config = null;
 	public static Database database = null;
 	public static UserList userList = null;
@@ -51,17 +50,6 @@ public class SoundCenter extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		Thread.currentThread().setName("SoundCenter Plugin");
-
-		musicDataFolder = this.getDataFolder().getPath() + File.separator + "musicdata" + File.separator;
-		File file = (new File(musicDataFolder));
-		if (!file.exists()) {
-			try {
-				file.mkdirs();
-				file.createNewFile();
-			} catch (IOException e) {
-				logger.w("Error while creating Music Data Folder.", e);
-			}
-		}
 
 		config = new Configuration(this);
 		logger = new SCLogger(this.getLogger(), config.debug());
