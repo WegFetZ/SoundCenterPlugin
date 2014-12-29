@@ -6,8 +6,6 @@ import java.io.InvalidClassException;
 import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -53,7 +51,7 @@ public class SoundCenter extends JavaPlugin {
 		Thread.currentThread().setName("SoundCenter Plugin");
 
 		config = new Configuration(this);
-		logger = new SCLogger(Logger.getLogger(SoundCenter.class.getCanonicalName()), config.debug());
+		logger = new SCLogger(this.getLogger(), config.debug());
 		userList = new UserList();
 
 		// register commands
