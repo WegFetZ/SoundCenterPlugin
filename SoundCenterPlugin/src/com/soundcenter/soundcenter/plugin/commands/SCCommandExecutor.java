@@ -69,6 +69,28 @@ public class SCCommandExecutor implements CommandExecutor{
 			}
 			sender.sendMessage(Messages.INFO_HELP_PAGE_PT1 + (page+1) + Messages.INFO_HELP_PAGE_PT2);
 			return true;
+		
+			/* sc users */
+		} else if (args[0].equalsIgnoreCase("users")) {
+			if (!sender.hasPermission("sc.init")) {
+				sender.sendMessage(Messages.ERR_PERMISSION_INIT);
+				return true;
+			}
+			int numUsers = 0;
+			String users = ". ";
+			ServerUser user;
+			for (Entry<Short, ServerUser> entry : SoundCenter.userList.acceptedUsers.entrySet()) {
+				user = entry.getValue();
+				if (user.isInitialized()) {
+					if (numUsers > 0) {
+						users.concat(", ");
+					}
+					users.concat(user.getName());
+					numUsers ++;
+				}
+			}
+			sender.sendMessage(Messages.INFO_USERS + numUsers + users);
+			return true;
 		}
 		
 		if (!(sender instanceof Player)) { //the following commands are only available for online players
@@ -83,29 +105,6 @@ public class SCCommandExecutor implements CommandExecutor{
 			ConnectionManager.initialize(player);
 			return true;
 		
-		/* sc users */
-		} else if (args[0].equalsIgnoreCase("users")) {
-			if (!player.hasPermission("sc.init")) {
-				player.sendMessage(Messages.ERR_PERMISSION_INIT);
-				return true;
-			}
-			int numUsers = 0;
-			String users = ".";
-			ServerUser user;
-			for (Entry<Short, ServerUser> entry : SoundCenter.userList.acceptedUsers.entrySet()) {
-				user = entry.getValue();
-				if (user.isInitialized()) {
-					if (numUsers == 0) {
-						users = ": ";
-					} else {
-						users += ", " + user.getName();
-					}
-					numUsers ++;
-				}
-			}
-			player.sendMessage(Messages.INFO_USERS + numUsers + users);
-			return true;
-			
 		/* sc mute */
 		} else if (args[0].equalsIgnoreCase("mute")) {
 			ServerUser user = SoundCenter.userList.getAcceptedUserByName(player.getName());
