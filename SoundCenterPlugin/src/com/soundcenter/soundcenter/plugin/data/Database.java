@@ -1,6 +1,8 @@
 package com.soundcenter.soundcenter.plugin.data;
 
 import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -16,13 +18,8 @@ import com.soundcenter.soundcenter.plugin.SoundCenter;
 
 public class Database implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4L;
 
-	private static final int DATABASE_VERSION = 4;
-	
 	public ConcurrentHashMap<Short, Station> boxes = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> areas = new ConcurrentHashMap<Short, Station>();
 	public ConcurrentHashMap<Short, Station> biomes = new ConcurrentHashMap<Short, Station>();
@@ -218,5 +215,27 @@ public class Database implements Serializable {
 		} catch (IOException e) {
 			SoundCenter.logger.w("Error while saving data.", e);
 		}
+	}
+	
+	/* set empty hashmaps for maps that fail to load */
+	public void readObject(ObjectInputStream stream) throws InvalidClassException, ClassNotFoundException, IOException {
+		stream.defaultReadObject();
+		
+		if (areas == null)
+			areas = new ConcurrentHashMap<Short, Station>();
+		if (boxes == null)
+			boxes = new ConcurrentHashMap<Short, Station>();
+		if (biomes == null)
+			biomes = new ConcurrentHashMap<Short, Station>();
+		if (worlds == null)
+			worlds = new ConcurrentHashMap<Short, Station>();
+		if (wgRegions == null)
+			wgRegions = new ConcurrentHashMap<Short, Station>();
+		if (songs == null)
+			songs = new ConcurrentHashMap<String, Song>();
+		if (boxCounts == null)
+			boxCounts = new ConcurrentHashMap<String, Integer>();
+		if (areaCounts == null)
+			areaCounts = new ConcurrentHashMap<String, Integer>();
 	}
 }

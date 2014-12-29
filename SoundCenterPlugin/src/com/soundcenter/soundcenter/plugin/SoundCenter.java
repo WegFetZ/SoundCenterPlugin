@@ -6,6 +6,7 @@ import java.io.InvalidClassException;
 import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -52,7 +53,7 @@ public class SoundCenter extends JavaPlugin {
 		Thread.currentThread().setName("SoundCenter Plugin");
 
 		config = new Configuration(this);
-		logger = new SCLogger(this.getLogger(), config.debug());
+		logger = new SCLogger(Logger.getLogger(SoundCenter.class.getCanonicalName()), config.debug());
 		userList = new UserList();
 
 		// register commands
@@ -106,10 +107,12 @@ public class SoundCenter extends JavaPlugin {
 					Files.move(dataFile, new File("plugins" + File.separator + "SoundCenter" + File.separator + "data.old.scdb"));
 				} catch(Exception e2){}
 			} catch (Exception e) {
+				database = new Database();
 				logger.w("Error while loading data.", e);
 			}
-		} else
-			database = new Database();		
+		} else {
+			database = new Database();	
+		}
 
 		// start server
 		tcpServer = new TcpServer(config.port(), config.serverBindAddr());
