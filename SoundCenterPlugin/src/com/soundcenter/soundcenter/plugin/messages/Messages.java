@@ -116,7 +116,7 @@ public class Messages {
 	
 	public static final String ERR_SENDER_NO_PLAYER = prefix + RED 
 															+ "You must be a player to use commands other than "
-															+ GREEN + "/sc help" + RED + ".";
+															+ GREEN + "/sc help" + RED + " and " + GREEN + "/sc users" + RED + ".";
 	public static final String ERR_IP_VERIFICATION = prefix + RED
 													+ "IP-Verification failed! Cannot use audioclient.";
 	public static final String ERR_NOT_ACCEPTED = prefix + "Oh noes! Something went wrong with initialization! "
