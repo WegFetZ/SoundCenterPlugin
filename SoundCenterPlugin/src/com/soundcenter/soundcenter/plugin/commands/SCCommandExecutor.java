@@ -267,6 +267,11 @@ public class SCCommandExecutor implements CommandExecutor{
 			
 		/* sc play <songtitle> [global | world <name>] */
 		} else if (args[0].equalsIgnoreCase("play")) {
+			ServerUser user = SoundCenter.userList.getAcceptedUserByName(player.getName());
+			if (user == null || !user.isInitialized()) {
+				ConnectionManager.sendStartClientMessage(player);
+				return true;
+			}
 			if (args.length >= 2) {
 				String title = "";
 				int nextParamIndex = 2;
@@ -291,7 +296,7 @@ public class SCCommandExecutor implements CommandExecutor{
 				}
 			
 				if (args.length < nextParamIndex+1) {
-					PlaybackManager.playSong(song, SoundCenter.userList.getAcceptedUserByName(player.getName()));
+					PlaybackManager.playSong(song, user);
 					player.sendMessage(Messages.INFO_PLAYING_SONG + song.getTitle());				
 					return true;
 				
@@ -330,6 +335,11 @@ public class SCCommandExecutor implements CommandExecutor{
 			
 		/* sc stop <songtitle> [global|world <name>]*/	
 		} else if (args[0].equalsIgnoreCase("stop")) {
+			ServerUser user = SoundCenter.userList.getAcceptedUserByName(player.getName());
+			if (user == null || !user.isInitialized()) {
+				ConnectionManager.sendStartClientMessage(player);
+				return true;
+			}
 			if (args.length >= 2) {
 				String title = "";
 				int nextParamIndex = 2;
@@ -354,7 +364,7 @@ public class SCCommandExecutor implements CommandExecutor{
 				}
 			
 				if (args.length < nextParamIndex+1) {
-					PlaybackManager.stopSong(song, SoundCenter.userList.getAcceptedUserByName(player.getName()));
+					PlaybackManager.stopSong(song, user);
 					player.sendMessage(Messages.INFO_STOPPED_SONG + song.getTitle());
 					return true;
 				
